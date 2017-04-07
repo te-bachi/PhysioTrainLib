@@ -8,22 +8,26 @@ class Quaternion {
     private:
         
     public:
-        float         _x;
-        float         _y;
-        float         _z;
-        float         _w;
+        float                   _x;
+        float                   _y;
+        float                   _z;
+        float                   _w;
 
         
-                    Quaternion();
-                    Quaternion(float x, float y, float z, float  w);
-                    Quaternion(const Quaternion& q);
-        virtual     ~Quaternion();
+                                Quaternion();
+                                Quaternion(float x, float y, float z, float  w);
+                                Quaternion(const Quaternion& q);
+        virtual                 ~Quaternion();
 
-        static Quaternion     diff(const Quaternion &a, const Quaternion &b);
-        static float          dot(const Quaternion &q1, const Quaternion &q2);
+        static Quaternion       diff(const Quaternion &a, const Quaternion &b);
+        static float            dot(const Quaternion &q1, const Quaternion &q2);
         
-        void                  inverse();
-        void                  conjugate();
+        void                    inverse();
+        void                    conjugate();
+        float                   getW();
+        float                   getX();
+        float                   getY();
+        float                   getZ();
 
         Quaternion operator* (const Quaternion &q);
         Quaternion operator/ (const float s);

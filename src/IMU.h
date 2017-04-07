@@ -4,7 +4,9 @@
 // MPU-9250 Digital Motion Processing (DMP) Library
 #include <SparkFunMPU9250-DMP.h>
 
+#include "Acceleration.h"
 #include "Quaternion.h"
+#include "EulerAngle.h"
 
 
 class IMU {

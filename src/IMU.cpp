@@ -94,30 +94,28 @@ IMU::update()
 Acceleration
 IMU::getAcceleration()
 {
-    _mpu.computeEulerAngles();
-    return EulerAngle(_mpu.roll, _mpu.pitch, _mpu.yaw)
+    float ax = _mpu.calcAccel(_mpu.ax);
+    float ay = _mpu.calcAccel(_mpu.ay);
+    float az = _mpu.calcAccel(_mpu.az);
+
+    return Acceleration(ax, ay, az);
 }
 
 Quaternion
 IMU::getQuaternion()
 {
-    
-    float dqw = _mpu.calcQuat(_mpu.qw);
-    float dqx = _mpu.calcQuat(_mpu.qx);
-    float dqy = _mpu.calcQuat(_mpu.qy);
-    float dqz = _mpu.calcQuat(_mpu.qz);
-    
-    String q = " " + String(dqw, 4) + " + " + String(dqx, 4) + " + " + String(dqy, 4) + " + " + String(dqz, 4) + "\r\n";
-    Serial.print(q);
-    
-    _mpu.computeEulerAngles();
+    float qw = _mpu.calcQuat(_mpu.qw);
+    float qx = _mpu.calcQuat(_mpu.qx);
+    float qy = _mpu.calcQuat(_mpu.qy);
+    float qz = _mpu.calcQuat(_mpu.qz);
 
-    return Quaternion(dqx, dqy, dqz, dqw);
+    return Quaternion(qx, qy, qz, qw);
 }
 
 EulerAngle
 IMU::getEulerAngle()
 {
-
+    _mpu.computeEulerAngles();
+    return EulerAngle(_mpu.roll, _mpu.pitch, _mpu.yaw);
 }
 

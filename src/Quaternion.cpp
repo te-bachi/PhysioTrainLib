@@ -11,14 +11,13 @@ Quaternion::Quaternion()
 Quaternion::Quaternion(float x, float y, float z, float w)
 : _x(x), _y(y), _z(z), _w(w)
 {
-    String q = "Const: " + String(w, 4) + " + " + String(x, 4) + " + " + String(y, 4) + " + " + String(z, 4) + "\r\n";
-    Serial.print(q);
+    //
 }
 
 Quaternion::Quaternion(const Quaternion& q)
 : _x(q._x), _y(q._y), _z(q._z), _w(q._w)
 {
-    Serial.println("Copy\r\n");
+    //
 }
 
 Quaternion::~Quaternion()
@@ -56,6 +55,31 @@ void Quaternion::conjugate()
 float Quaternion::dot(const Quaternion &q1, const Quaternion &q2)
 {
     return q1._x*q2._x + q1._y*q2._y + q1._z*q2._z + q1._w*q2._w;
+}
+
+
+float
+Quaternion::getW()
+{
+    return _w;
+}
+
+float
+Quaternion::getX()
+{
+    return _x;
+}
+
+float
+Quaternion::getY()
+{
+    return _y;
+}
+
+float
+Quaternion::getZ()
+{
+    return _z;
 }
 
 Quaternion Quaternion::operator*(const Quaternion &q)
