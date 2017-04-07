@@ -1,14 +1,11 @@
+/*******************************************************************************
+ * PhysioTrain (c) 2017
+ * Andreas Bachmann
+ * 07.04.2017
+ */
+
 #ifndef __MENU_H__
 #define __MENU_H__
-
-/*
-class Menu;
-class MenuMain;
-class MenuFile;
-class MenuRun;
-
-#include "CLI.h"
-*/
 
 class CLI;
 

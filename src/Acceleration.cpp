@@ -1,3 +1,8 @@
+/*******************************************************************************
+ * PhysioTrain (c) 2017
+ * Andreas Bachmann
+ * 07.04.2017
+ */
 
 #include "config.h"
 #include "Acceleration.h"

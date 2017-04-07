@@ -1,3 +1,9 @@
+/*******************************************************************************
+ * PhysioTrain (c) 2017
+ * Andreas Bachmann
+ * 07.04.2017
+ */
+
 #ifndef __QUATERNION_H__
 #define __QUATERNION_H__
 

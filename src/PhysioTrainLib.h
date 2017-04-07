@@ -1,3 +1,9 @@
+/*******************************************************************************
+ * PhysioTrain (c) 2017
+ * Andreas Bachmann
+ * 07.04.2017
+ */
+
 #ifndef __PHYSIO_TRAIN_LIB__
 #define __PHYSIO_TRAIN_LIB__
 
