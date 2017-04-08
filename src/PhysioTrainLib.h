@@ -9,6 +9,7 @@
 
 #include "Acceleration.h"
 #include "Quaternion.h"
+#include "Filter.h"
 #include "CLI.h"
 #include "EulerAngle.h"
 #include "IMU.h"
