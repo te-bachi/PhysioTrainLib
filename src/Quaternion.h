@@ -7,21 +7,21 @@
 #ifndef __QUATERNION_H__
 #define __QUATERNION_H__
 
+#include "RotationMatrix.h"
+
 class Quaternion;
 
 class Quaternion {
     
     private:
-        
-    public:
+        float                   _w;
         float                   _x;
         float                   _y;
         float                   _z;
-        float                   _w;
-
         
+    public:
                                 Quaternion();
-                                Quaternion(float x, float y, float z, float  w);
+                                Quaternion(float  w, float x, float y, float z);
                                 Quaternion(const Quaternion& q);
         virtual                 ~Quaternion();
 
@@ -34,6 +34,7 @@ class Quaternion {
         float                   getX();
         float                   getY();
         float                   getZ();
+        RotationMatrix          getRotationMatrix();
 
         Quaternion operator* (const Quaternion &q);
         Quaternion operator/ (const float s);

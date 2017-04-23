@@ -9,10 +9,13 @@
 
 #include "Acceleration.h"
 #include "Quaternion.h"
-#include "Filter.h"
-#include "CLI.h"
 #include "EulerAngle.h"
+#include "Position.h"
+#include "RotationMatrix.h"
+#include "Transformation.h"
+#include "Filter.h"
 #include "IMU.h"
+#include "CLI.h"
 #include "Menu.h"
 
 #endif

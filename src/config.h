@@ -7,7 +7,9 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
+#ifdef ARDUINO
 #include <Arduino.h>
+#endif
 
 #if defined(ARDUINO_ARCH_SAMD)
     #define Serial SerialUSB

@@ -114,7 +114,7 @@ IMU::getQuaternion()
     float qy = _mpu.calcQuat(_mpu.qy);
     float qz = _mpu.calcQuat(_mpu.qz);
 
-    return Quaternion(qx, qy, qz, qw);
+    return Quaternion(qw, qx, qy, qz);
 }
 
 EulerAngle
