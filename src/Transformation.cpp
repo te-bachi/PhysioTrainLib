@@ -6,8 +6,12 @@
 
 #include "config.h"
 #include "Transformation.h"
+
 #include "avr/dtostrf.h"
+
+#ifndef ARDUINO
 #include <stdio.h>
+#endif
 
 Transformation::Transformation()
 : Transformation(Transformation::TYPE_EYE)
@@ -83,14 +87,15 @@ String
 Transformation::toString()
 {
     String res = "";
-    char str[16][16];
+    char str[16];
     int  m;
     int  n;
     for (m = 0; m < SIZE; m++) {
         res += "  ";
         for (n = 0; n < SIZE; n++) {
-            dtostrf(a[m][n], 8, 4, str[(m << (SIZE - 2)) + n]);
-            res += str[(m << (SIZE - 2)) + n];
+            dtostrf(a[m][n], 8, 4, str);
+            res += str;
+            res += " ";
         }
         res += "\n";
     }
