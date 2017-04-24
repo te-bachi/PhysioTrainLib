@@ -1,6 +1,3 @@
-.SUFFIXES::
-.PHONY:: all clean mkdirs Makefile autogen.mk
-% :: ;
 
 CROSS_COMPILE  =
 CC             = $(CROSS_COMPILE)gcc
@@ -33,7 +30,7 @@ define DIRECTORY_template
 
 DIRECTORIES += $(OBJ_DIR)/$(1)
 
-$(OBJ_DIR)/$(1):
+$(OBJ_DIR)/$(1): FORCE
 	@echo "[MKDIR] $$@"
 	$(SILENT)mkdir -p $(OBJ_DIR)/$(1)
 
@@ -96,15 +93,21 @@ $(1)_clean:
 	$(SILENT)rm -rf $($(1)_OBJECT) $(OBJ_DIR)/$(1)
 endef
 
-
 all: mkdirs $(LIBRARIES_STATIC) $(PROGRAMS)
-clean: $(addsuffix _clean,$(LIBRARIES_STATIC)) $(addsuffix _clean,$(PROGRAMS))
-	$(SILENT)if ([ -d "$(OBJ_DIR)" ] && [ -z "`ls -A $(OBJ_DIR)`" ]); then \
-		rm -rf $(OBJ_DIR); \
-	fi
 
 $(foreach lib,   $(LIBRARIES_STATIC), $(eval $(call VARIABLE_template,$(lib))))
 $(foreach lib,   $(LIBRARIES_STATIC), $(eval $(call LIBRARY_template,$(lib))))
 
 $(foreach prog,  $(PROGRAMS),         $(eval $(call VARIABLE_template,$(prog))))
 $(foreach prog, $(PROGRAMS), $(eval $(call PROGRAM_template,$(prog))))
+
+
+.SUFFIXES::
+.PHONY:: all clean mkdirs Makefile autogen.mk $(DIRECTORIES) bla
+% :: ;
+
+clean: $(addsuffix _clean,$(LIBRARIES_STATIC)) $(addsuffix _clean,$(PROGRAMS))
+	$(SILENT)if ([ -d "$(OBJ_DIR)" ] && [ -z "`ls -A $(OBJ_DIR)`" ]); then \
+		rm -rf $(OBJ_DIR); \
+	fi
+mkdirs: $(DIRECTORIES)
