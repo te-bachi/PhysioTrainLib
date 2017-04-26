@@ -91,6 +91,30 @@ Quaternion::getZ()
     return _z;
 }
 
+void
+Quaternion::setW(float w)
+{
+    _w = w;
+}
+
+void
+Quaternion::setX(float x)
+{
+    _x = x;
+}
+
+void
+Quaternion::setY(float y)
+{
+    _y = y;
+}
+
+void
+Quaternion::setZ(float z)
+{
+    _z = z;
+}
+
 RotationMatrix
 Quaternion::getRotationMatrix()
 {

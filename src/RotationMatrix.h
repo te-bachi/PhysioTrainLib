@@ -7,6 +7,8 @@
 #ifndef __ROTATION_MATRIX_H__
 #define __ROTATION_MATRIX_H__
 
+#include "WString.h"
+
 class RotationMatrix {
     public:
         static const int        SIZE = 3;
@@ -20,6 +22,8 @@ class RotationMatrix {
         virtual                 ~RotationMatrix();
 
         float                   getElement(int m, int n);
+        String                  toString();
+        String                  toStringMatrix();
 
 };
 

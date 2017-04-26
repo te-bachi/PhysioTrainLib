@@ -2,6 +2,8 @@
 #include "config.h"
 #include "RotationMatrix.h"
 
+#include "avr/dtostrf.h"
+
 RotationMatrix::RotationMatrix()
 {
     int m;
@@ -38,4 +40,44 @@ RotationMatrix::getElement(int m, int n)
         return a[m][n];
     }
     return 0.0f;
+}
+
+String
+RotationMatrix::toString()
+{
+    String res = "";
+    char str[16];
+    int  m;
+    int  n;
+
+    for (m = 0; m < SIZE; m++) {
+        for (n = 0; n < SIZE; n++) {
+            dtostrf(a[m][n], 8, 4, str);
+            res += str;
+            res += " ";
+        }
+    }
+
+    return res;
+}
+
+String
+RotationMatrix::toStringMatrix()
+{
+    String res = "";
+    char str[16];
+    int  m;
+    int  n;
+
+    for (m = 0; m < SIZE; m++) {
+        res += "  ";
+        for (n = 0; n < SIZE; n++) {
+            dtostrf(a[m][n], 8, 4, str);
+            res += str;
+            res += " ";
+        }
+        res += "\n";
+    }
+
+    return res;
 }

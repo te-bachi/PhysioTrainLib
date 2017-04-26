@@ -30,10 +30,16 @@ class Quaternion {
         
         void                    inverse();
         void                    conjugate();
+
         float                   getW();
         float                   getX();
         float                   getY();
         float                   getZ();
+        void                    setW(float w);
+        void                    setX(float x);
+        void                    setY(float y);
+        void                    setZ(float z);
+
         RotationMatrix          getRotationMatrix();
 
         Quaternion operator* (const Quaternion &q);

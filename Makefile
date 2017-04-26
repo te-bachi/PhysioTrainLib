@@ -16,17 +16,21 @@ MKDIR_LIST                  = obj/physiotrain/test
 physiotrain_CFLAGS       = -Isrc -Isrc/test
 physiotrain_LDFLAGS      = 
 physiotrain_LIBRARIES    = 
-physiotrain_SOURCE       = test/itoa.cpp \
-                           test/avr/dtostrf.cpp \
-                           test/PhysioTrain.cpp \
-                           test/WString.cpp \
-                           Acceleration.cpp \
+physiotrain_SOURCE       = Acceleration.cpp \
                            EulerAngle.cpp \
                            Filter.cpp \
                            Quaternion.cpp \
                            Position.cpp \
                            RotationMatrix.cpp \
-                           Transformation.cpp
+                           Transformation.cpp \
+                           KinematicModel.cpp \
+                           IMU.cpp \
+                           test/PhysioTrain.cpp \
+                           test/Wire.cpp \
+                           test/WString.cpp \
+                           test/SparkFunMPU9250-DMP.cpp \
+                           test/itoa.cpp \
+                           test/avr/dtostrf.cpp \
                            
 
 

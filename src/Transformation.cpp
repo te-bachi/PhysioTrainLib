@@ -40,16 +40,19 @@ Transformation::Transformation(Position &pos, RotationMatrix &rot)
     int m;
     int n;
 
+    /* rotation matrix */
     for (m = 0; m < RotationMatrix::SIZE; m++) {
         for (n = 0; n < RotationMatrix::SIZE; n++) {
             a[m][n] = rot.getElement(m, n);
         }
     }
 
+    /* position */
     a[0][3] = pos.getX();
     a[1][3] = pos.getY();
     a[2][3] = pos.getZ();
 
+    /* homogeneous complement */
     a[3][0] = 0.0f;
     a[3][1] = 0.0f;
     a[3][2] = 0.0f;
@@ -90,6 +93,26 @@ Transformation::toString()
     char str[16];
     int  m;
     int  n;
+
+    for (m = 0; m < SIZE; m++) {
+        for (n = 0; n < SIZE; n++) {
+            dtostrf(a[m][n], 8, 4, str);
+            res += str;
+            res += " ";
+        }
+    }
+
+    return res;
+}
+
+String
+Transformation::toStringMatrix()
+{
+    String res = "";
+    char str[16];
+    int  m;
+    int  n;
+
     for (m = 0; m < SIZE; m++) {
         res += "  ";
         for (n = 0; n < SIZE; n++) {
@@ -102,8 +125,6 @@ Transformation::toString()
 
     return res;
 }
-
-
 
 Transformation
 Transformation::operator* (const Transformation &other)

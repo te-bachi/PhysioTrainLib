@@ -7,6 +7,8 @@
 #include "config.h"
 #include "Position.h"
 
+#include "avr/dtostrf.h"
+
 Position::Position()
 : _x(0), _y(0), _z(0)
 {
@@ -46,4 +48,24 @@ float
 Position::getZ()
 {
     return _z;
+}
+
+String
+Position::toString()
+{
+    String res = "";
+    char str[16];
+
+    dtostrf(_x, 8, 4, str);
+    res += str;
+    res += " ";
+
+    dtostrf(_y, 8, 4, str);
+    res += str;
+    res += " ";
+
+    dtostrf(_z, 8, 4, str);
+    res += str;
+
+    return res;
 }

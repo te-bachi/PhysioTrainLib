@@ -7,6 +7,8 @@
 #ifndef __POSITION_H__
 #define __POSITION_H__
 
+#include "WString.h"
+
 class Position {
 
     private:
@@ -23,6 +25,8 @@ class Position {
         float                   getX();
         float                   getY();
         float                   getZ();
+
+        String                  toString();
 
 };
 

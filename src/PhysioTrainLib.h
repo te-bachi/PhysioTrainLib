@@ -12,6 +12,7 @@
 #include "EulerAngle.h"
 #include "Filter.h"
 #include "IMU.h"
+#include "KinematicModel.h"
 #include "Menu.h"
 #include "Position.h"
 #include "Quaternion.h"

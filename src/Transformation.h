@@ -31,6 +31,7 @@ class Transformation {
 
         float                   getElement(int m, int n);
         String                  toString();
+        String                  toStringMatrix();
 
         Transformation operator* (const Transformation &other);
 
