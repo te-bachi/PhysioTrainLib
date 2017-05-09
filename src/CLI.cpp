@@ -20,10 +20,6 @@ CLI::~CLI()
 bool
 CLI::begin()
 {
-    Serial.begin(SERIAL_BAUD_RATE);
-
-    uint32_t bkla;
-
     /*
     main    = MenuMain(this);
     file    = MenuFile(this);

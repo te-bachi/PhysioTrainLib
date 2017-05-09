@@ -22,14 +22,21 @@
 
 
 /******************************************************************************
+ * IMU
+ *****************************************************************************/
+#define IMU_SELECT_INTERNAL             0
+#define IMU_SELECT_EXTERNAL             1
+
+
+/******************************************************************************
  * I2C
  *****************************************************************************/
 
-#define I2C_ADDRESS_I2C_MULTIPLEXER     0x68
-#define I2C_ADDRESS_GPIO_EXPANDER       0x68
+#define I2C_ADDRESS_I2C_MULTIPLEXER     0x70
+#define I2C_ADDRESS_GPIO_EXPANDER       0x3E
 #define I2C_ADDRESS_RTC                 0x68
-#define I2C_ADDRESS_VIBRA               0x68
-#define I2C_ADDRESS_RAZOR_SLAVE         0x68
+#define I2C_ADDRESS_VIBRA               0x5A
+#define I2C_ADDRESS_RAZOR_SLAVE         0x1F
 
 #define I2C_MULTIPLEXER_GPIO_EXPANDER   2
 #define I2C_MULTIPLEXER_RTC             3

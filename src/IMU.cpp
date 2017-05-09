@@ -6,13 +6,13 @@
 
 #include "config.h"
 #include "IMU.h"
+#include "I2CMux.h"
 
-IMU* IMU::_instance = NULL;
-
-IMU::IMU()
+IMU::IMU(int select)
+: _select(select)
 {
     // Set up _mpu-9250 interrupt input (active-low)
-    pinMode(MPU9250_INT_PIN, INPUT_PULLUP);
+    //pinMode(MPU9250_INT_PIN, INPUT_PULLUP);
 }
 
 IMU::~IMU()
@@ -20,28 +20,32 @@ IMU::~IMU()
     //
 }
 
-IMU*
-IMU::instance()
-{
-    if (_instance == NULL) {
-        _instance = new IMU();
-    }
-    return _instance;
-}
-
 bool
 IMU::begin()
 {
+    if (_select == IMU_SELECT_EXTERNAL) {
+        I2CMux::selectRazorSlave();
+    }
+
+//    Serial.print("MPU::setWire(");
+//    Serial.print(_select, DEC);
+//    Serial.print(")\n");
+    _mpu.setWire(_select);
+
+
+
+    //Serial.print("MPU::begin()\n");
     // imu.begin() should return 0 on success. Will initialize
     // I2C bus, and reset __mpu-9250 to defaults.
     if (_mpu.begin() != INV_SUCCESS) {
         return false;
     }
+    //Serial.print("MPU::setup()\n");
     
     // Set up _mpu-9250 interrupt:
-    _mpu.enableInterrupt(); // Enable interrupt output
-    _mpu.setIntLevel(1);    // Set interrupt to active-low
-    _mpu.setIntLatched(1);  // Latch interrupt output
+//    _mpu.enableInterrupt(); // Enable interrupt output
+//    _mpu.setIntLevel(1);    // Set interrupt to active-low
+//    _mpu.setIntLatched(1);  // Latch interrupt output
     
     // Configure sensors:
     // Set gyro full-scale range: options are 250, 500, 1000, or 2000:
@@ -77,6 +81,11 @@ IMU::begin()
 bool
 IMU::update()
 {
+    if (_select == IMU_SELECT_EXTERNAL) {
+        I2CMux::selectRazorSlave();
+    }
+    _mpu.setWire(_select);
+
     // New data available?
     if (!_mpu.fifoAvailable()) {
         return false;
@@ -115,6 +124,12 @@ IMU::getQuaternion()
     float qz = _mpu.calcQuat(_mpu.qz);
 
     return Quaternion(qw, qx, qy, qz);
+}
+
+QuaternionFixedPoint
+IMU::getQuaternionFixedPoint()
+{
+    return QuaternionFixedPoint(_mpu.qw, _mpu.qx, _mpu.qy, _mpu.qz);
 }
 
 EulerAngle

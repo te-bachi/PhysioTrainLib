@@ -11,12 +11,15 @@
 #include "CLI.h"
 #include "EulerAngle.h"
 #include "Filter.h"
+#include "I2CMux.h"
 #include "IMU.h"
 #include "KinematicModel.h"
 #include "Menu.h"
 #include "Position.h"
 #include "Quaternion.h"
+#include "QuaternionFixedPoint.h"
 #include "RotationMatrix.h"
+#include "SdCard.h"
 #include "Transformation.h"
 
 #endif

@@ -84,20 +84,6 @@ KinematicModel::requestQuaternion()
     _upperImu->write(1 << I2C_MULTIPLEXER_RAZOR_SLAVE);
     _upperImu->endTransmission();
 
-    /* Send request to receive quaternion*/
-    _upperImu->requestFrom(I2C_ADDRESS_RAZOR_SLAVE, 6);
-
-    /* Slave may send less than requested... */
-    for (i = 0; _upperImu->available() && i < 64; i++) {
-        /* Receive a byte */
-        buffer[i] = _upperImu->read();
-    }
-
-    /* Convert */
-    q.setW(0.0f);
-    q.setX(0.0f);
-    q.setY(0.0f);
-    q.setZ(0.0f);
 
     return q;
 }

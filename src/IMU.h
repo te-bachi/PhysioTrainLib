@@ -12,18 +12,15 @@
 
 #include "Acceleration.h"
 #include "Quaternion.h"
+#include "QuaternionFixedPoint.h"
 #include "EulerAngle.h"
 
 
 class IMU {
     
     private:
-        static IMU*         _instance;
-        
-        MPU9250_DMP         _mpu;
-                    
-                            IMU();
-        virtual             ~IMU();
+        int                     _select;
+        MPU9250_DMP             _mpu;
 
         
     public:
@@ -38,13 +35,15 @@ class IMU {
         const static int                AG_LPF                  = 5;
         const static bool               ENABLE_GYRO_CALIBRATION = true;
 
-        static IMU*         instance();
 
-        bool                begin();
-        bool                update();
-        Acceleration        getAcceleration();
-        Quaternion          getQuaternion();
-        EulerAngle          getEulerAngle();
+                                IMU(int select);
+        virtual                 ~IMU();
+        bool                    begin();
+        bool                    update();
+        Acceleration            getAcceleration();
+        Quaternion              getQuaternion();
+        QuaternionFixedPoint    getQuaternionFixedPoint();
+        EulerAngle              getEulerAngle();
 };
 
 #endif

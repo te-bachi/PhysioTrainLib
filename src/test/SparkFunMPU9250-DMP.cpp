@@ -7,9 +7,14 @@ MPU9250_DMP::MPU9250_DMP()
 {
 }
 
-inv_error_t MPU9250_DMP::begin(void)
+inv_error_t MPU9250_DMP::begin()
 {
     return INV_SUCCESS;
+}
+
+void MPU9250_DMP::setWire(int select)
+{
+
 }
 
 inv_error_t MPU9250_DMP::enableInterrupt(unsigned char enable)
