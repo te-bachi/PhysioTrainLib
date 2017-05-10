@@ -7,6 +7,19 @@
 #ifndef __PHYSIO_TRAIN_H__
 #define __PHYSIO_TRAIN_H__
 
+#include <Arduino.h>
+#include <Wire.h>
+#include "PhysioTrainLib.h"
+
+extern CLI              cli;
+extern IMU              imuLower;
+extern IMU              imuUpper;
+extern KinematicModel   model;
+
+extern TwoWire          muxWire;
+
+#define Wire1           muxWire
+#define Wire3           Wire
 
 class PhysioTrain {
 
@@ -18,14 +31,14 @@ class PhysioTrain {
             EXERCISE,
             EVALUATE
         };
-        static Mode  MODE;
 
+        static Mode MODE;
 
-
-    public:
-        PhysioTrain();
+                    PhysioTrain();
         virtual     ~PhysioTrain();
 
+    public:
+        static void begin();
 
     private:
 };
