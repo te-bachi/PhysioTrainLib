@@ -9,7 +9,12 @@
 
 #include <Arduino.h>
 #include <Wire.h>
+
+#include "SparkFunSX1509.h"
 #include "PhysioTrainLib.h"
+
+#define Wire1           muxWire
+#define Wire3           Wire
 
 extern CLI              cli;
 extern IMU              imuLower;
@@ -17,9 +22,11 @@ extern IMU              imuUpper;
 extern KinematicModel   model;
 
 extern TwoWire          muxWire;
+extern SX1509           ioExpander;
+//extern Timer            timer; // using millis() rather than the Timer object
 
-#define Wire1           muxWire
-#define Wire3           Wire
+extern Switch           recordSwitch;
+extern PushButton       startStopButton;
 
 class PhysioTrain {
 

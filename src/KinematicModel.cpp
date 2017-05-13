@@ -20,7 +20,7 @@ KinematicModel::~KinematicModel()
 }
 
 void
-KinematicModel::begin(TwoWire *upperImu, IMU *lowerImu)
+KinematicModel::begin(IMU *upperImu, IMU *lowerImu)
 {
     this->_upperImu = upperImu;
     this->_lowerImu = lowerImu;
@@ -36,10 +36,10 @@ KinematicModel::reinitialize()
 
 
     /* Request quaternion from Razor slave*/
-    _initUpperArmQuaternion = requestQuaternion();
+    //_initUpperArmQuaternion = requestQuaternion();
 
     /* Read quaternion from own IMU */
-    _initLowerArmQuaternion = _lowerImu->getQuaternion();
+    //_initLowerArmQuaternion = _lowerImu->getQuaternion();
 
 
 }
@@ -70,20 +70,4 @@ void
 KinematicModel::setLowerArmLength(float lowerArmLength)
 {
     this->_lowerArmLength = lowerArmLength;
-}
-
-Quaternion
-KinematicModel::requestQuaternion()
-{
-    Quaternion  q;
-    char        buffer[64];
-    int         i;
-
-    /* Multiplexer Select Razor Slave */
-    _upperImu->beginTransmission(I2C_ADDRESS_I2C_MULTIPLEXER);
-    _upperImu->write(1 << I2C_MULTIPLEXER_RAZOR_SLAVE);
-    _upperImu->endTransmission();
-
-
-    return q;
 }

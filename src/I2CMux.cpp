@@ -19,11 +19,6 @@ I2CMux::~I2CMux()
 void
 I2CMux::select(int channel)
 {
-//    Serial.print("I2CMux::select(0x");
-//    Serial.print(I2C_ADDRESS_I2C_MULTIPLEXER, HEX);
-//    Serial.print(" => ");
-//    Serial.print(channel, DEC);
-//    Serial.print(")\n");
     muxWire.beginTransmission(I2C_ADDRESS_I2C_MULTIPLEXER);
     muxWire.write(1 << channel);
     muxWire.endTransmission();

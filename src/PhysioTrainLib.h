@@ -16,10 +16,13 @@
 #include "KinematicModel.h"
 #include "Menu.h"
 #include "Position.h"
+#include "PushButton.h"
 #include "Quaternion.h"
 #include "QuaternionFixedPoint.h"
 #include "RotationMatrix.h"
 #include "SdCard.h"
+#include "Switch.h"
+#include "Timer.h"
 #include "Transformation.h"
 
 #endif

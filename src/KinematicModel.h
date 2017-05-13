@@ -7,7 +7,6 @@
 #ifndef __KINEMATIC_MODEL_H__
 #define __KINEMATIC_MODEL_H__
 
-#include "Wire.h"
 #include "IMU.h"
 #include "Quaternion.h"
 #include "Position.h"
@@ -16,7 +15,7 @@ class KinematicModel {
     public:
 
     private:
-        TwoWire                 *_upperImu;
+        IMU                     *_upperImu;
         IMU                     *_lowerImu;
         float                   _upperArmLength;
         float                   _lowerArmLength;
@@ -30,14 +29,12 @@ class KinematicModel {
                                 KinematicModel(const KinematicModel& model);
         virtual                 ~KinematicModel();
 
-        void                    begin(TwoWire *upperImu, IMU *lowerImu);
+        void                    begin(IMU *upperImu, IMU *lowerImu);
         void                    reinitialize();
         void                    update();
         void                    setUpperArmLength(float upperArmLength);
         void                    setLowerArmLength(float lowerArmLength);
 
-    private:
-        Quaternion              requestQuaternion();
 };
 
 #endif

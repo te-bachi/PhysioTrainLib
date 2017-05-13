@@ -13,17 +13,13 @@
  * Serial Port Config
  *****************************************************************************/
 
-#if defined(ARDUINO_ARCH_SAMD)
-    #define Serial SerialUSB
-#endif
-
-// Serial port baud
-#define SERIAL_BAUD_RATE                115200
+#define SERIAL_BAUD_RATE                115200      // Serial port baud
 
 
 /******************************************************************************
  * IMU
  *****************************************************************************/
+
 #define IMU_SELECT_INTERNAL             0
 #define IMU_SELECT_EXTERNAL             1
 
@@ -42,6 +38,33 @@
 #define I2C_MULTIPLEXER_RTC             3
 #define I2C_MULTIPLEXER_VIBRA           4
 #define I2C_MULTIPLEXER_RAZOR_SLAVE     5
+
+/******************************************************************************
+ * GPIO RAZOR
+ *****************************************************************************/
+
+// Input
+#define IO_IN_ACCU_MEASURE              A1          // A1,7 (im Schema)
+
+/******************************************************************************
+ * GPIO EXPANDER
+ *****************************************************************************/
+
+// Input
+#define IO_IN_SWITCH_RECORD             0
+#define IO_IN_PUSHBUTTON_START_STOP     1
+#define IO_IN_ROTARYSWITCH_MODE         2           // Pin 2-4
+
+// Output
+#define IO_OUT_ACCU_INDICATION_LOW      14          // LED links
+#define IO_OUT_ACCU_INDICATION_HIGH     15          // LED rechts
+
+/******************************************************************************
+ * TIME AND DATE
+ *****************************************************************************/
+
+#define TIME_DEBOUNCING_DELAY_MS        30          // in milliserconds
+
 
 #endif
 
