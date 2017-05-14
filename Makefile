@@ -1,5 +1,5 @@
 
-#LOUD = 1
+@LOUD = 1
 LIBRARIES_STATIC            = 
 PROGRAMS                    = physiotrain
 
@@ -24,8 +24,10 @@ physiotrain_SOURCE       = Acceleration.cpp \
                            RotationMatrix.cpp \
                            IMU.cpp \
                            KinematicModel.cpp \
+                           Mode.cpp \
                            Quaternion.cpp \
                            QuaternionFixedPoint.cpp \
+                           StateMachine.cpp \
                            Transformation.cpp \
                            test/PhysioTrainTest.cpp \
                            test/Wire.cpp \

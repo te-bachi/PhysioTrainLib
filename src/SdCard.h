@@ -21,6 +21,7 @@ class SdCard {
         static const int    LOG_FILE_INDEX_MAX;
         static const char  *LOG_FILE_PREFIX_TEACH;
         static const char  *LOG_FILE_PREFIX_EXERCISE;
+        static const char  *LOG_FILE_PREFIX_RESULT;
         static const char  *LOG_FILE_SUFFIX;
 
         bool        init;
@@ -42,10 +43,12 @@ class SdCard {
         File        openTeachFile(bool *error);
         File        replaceTeachFile();
         File        openNextExerciseFile(bool *error);
+        File        openNextResultFile(bool *error);
         void        deleteExerciseFiles();
 
     private:
         String      getNextExerciseFile(bool *error);
+        String      getNextResultFile(bool *error);
 };
 
 #endif

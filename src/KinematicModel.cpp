@@ -30,6 +30,7 @@ KinematicModel::begin(IMU *upperImu, IMU *lowerImu)
 void
 KinematicModel::reinitialize()
 {
+    //SerialUSB.println("reinitialize() ============");
     /* Get quaternion from IMU */
     _initUpperArmQuaternion = _upperImu->getQuaternion();
     _initLowerArmQuaternion = _lowerImu->getQuaternion();
@@ -44,18 +45,32 @@ KinematicModel::reinitialize()
 void
 KinematicModel::update()
 {
-    Quaternion      upperQ = _upperImu->getQuaternion();
-    Quaternion      lowerQ = _lowerImu->getQuaternion();
-    Position        p1;
-    Position        p2(0.0f, 0.0f, -_upperArmLength);
-    Position        p3(0.0f, 0.0f, -_lowerArmLength);
-    RotationMatrix  rot1 = upperQ.getRotationMatrix();
-    RotationMatrix  rot2 = lowerQ.getRotationMatrix();
-    Transformation  t01(p1, rot1);
-    Transformation  t02(p1, rot2);
-    Transformation  t03(p1, rot2);
+    Quaternion      upperQAbs = _upperImu->getQuaternion();
+    Quaternion      lowerQAbs = _lowerImu->getQuaternion();
+    Quaternion      upperQRel = upperQAbs * _initUpperArmQuaternion;
+    Quaternion      lowerQRel = lowerQAbs * _initLowerArmQuaternion;
+    Position        p10(0.0f, 0.0f,  0.0f);
+    Position        p11(0.0f, 0.0f, -_upperArmLength);
+    Position        p12(0.0f, 0.0f, -_lowerArmLength);
+    RotationMatrix  rot1 = upperQRel.getRotationMatrix();
+    RotationMatrix  rot2 = lowerQRel.getRotationMatrix();
+    Transformation  t01(p10, rot1);
+    Transformation  t02(p10, rot2);
+    Transformation  t03(p10, rot2);
 
+    /*
+    SerialUSB.print("upperQAbs: ");
+    SerialUSB.println(upperQAbs.toString());
+    SerialUSB.print("lowerQAbs: ");
+    SerialUSB.println(lowerQAbs.toString());
+    SerialUSB.print("upperQRel: ");
+    SerialUSB.println(upperQRel.toString());
+    SerialUSB.print("lowerQRel: ");
+    SerialUSB.println(lowerQRel.toString());
+    */
 
+    _upperArmPosition =                     (t01 * p11);
+    _lowerArmPosition = _upperArmPosition + (t02 * p12);
 }
 
 void
@@ -75,4 +90,16 @@ void
 KinematicModel::setLowerArmLength(float lowerArmLength)
 {
     this->_lowerArmLength = lowerArmLength;
+}
+
+Position
+KinematicModel::getUpperArmPosition()
+{
+    return _upperArmPosition;
+}
+
+Position
+KinematicModel::getLowerArmPosition()
+{
+    return _lowerArmPosition;
 }

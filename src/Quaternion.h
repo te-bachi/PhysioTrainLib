@@ -25,6 +25,8 @@ class Quaternion {
                                 Quaternion(const Quaternion& q);
         virtual                 ~Quaternion();
 
+        String                  toString();
+
         static Quaternion       diff(const Quaternion &a, const Quaternion &b);
         static float            dot(const Quaternion &q1, const Quaternion &q2);
         

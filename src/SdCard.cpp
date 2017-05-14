@@ -11,7 +11,8 @@ const int    SdCard::SD_CHIP_SELECT_PIN         = 38;
 const int    SdCard::LOG_FILE_INDEX_MAX         = 1024;
 const char  *SdCard::LOG_FILE_PREFIX_TEACH      = "teach";
 const char  *SdCard::LOG_FILE_PREFIX_EXERCISE   = "exercise_";
-const char  *SdCard::LOG_FILE_SUFFIX            = ".log";
+const char  *SdCard::LOG_FILE_PREFIX_RESULT     = "result_";
+const char  *SdCard::LOG_FILE_SUFFIX            = ".txt";
 
 
 SdCard::SdCard()
@@ -142,6 +143,14 @@ SdCard::openNextExerciseFile(bool *error)
     return SD.open(filename.c_str(), FILE_WRITE);
 }
 
+File
+SdCard::openNextResultFile(bool *error)
+{
+    String filename = getNextExerciseFile(error);
+
+    return SD.open(filename.c_str(), FILE_WRITE);
+}
+
 void
 SdCard::deleteExerciseFiles()
 {
@@ -181,6 +190,37 @@ SdCard::getNextExerciseFile(bool *error)
 
         /* Construct a file with FOLDER/PREFIX[Index].SUFFIX */
         filename = String(LOG_FILE_PREFIX_EXERCISE);
+        filename += String(i);
+        filename += String(LOG_FILE_SUFFIX);
+
+        /*  If the file name doesn't exist, return it */
+        if (!SD.exists(filename)) {
+            *error = false;
+            return filename;
+        }
+
+        /* Otherwise increment the index, and try again */
+        i++;
+    }
+
+    *error = true;
+    return "";
+}
+
+/**
+ * Find the next available log file. Or return a null string
+ * if we've reached the maximum file limit.
+ */
+String
+SdCard::getNextResultFile(bool *error)
+{
+    String      filename;
+    int         i;
+
+    for (i = 0; i < LOG_FILE_INDEX_MAX; i++) {
+
+        /* Construct a file with FOLDER/PREFIX[Index].SUFFIX */
+        filename = String(LOG_FILE_PREFIX_RESULT);
         filename += String(i);
         filename += String(LOG_FILE_SUFFIX);
 

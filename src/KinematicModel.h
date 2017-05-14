@@ -37,6 +37,9 @@ class KinematicModel {
         void                    setUpperArmLength(float upperArmLength);
         void                    setLowerArmLength(float lowerArmLength);
 
+        Position                getUpperArmPosition();
+        Position                getLowerArmPosition();
+
 };
 
 #endif

@@ -13,8 +13,11 @@
  * Kinematik
  *****************************************************************************/
 
-#define KINEMATIK_UPPER_ARM_LENGTH      280         // in Millimeter [mm]
-#define KINEMATIK_LOWER_ARM_LENGTH      280         // in Millimeter [mm]
+//#define KINEMATIK_UPPER_ARM_LENGTH      280.0f         // in Millimeter [mm]
+//#define KINEMATIK_LOWER_ARM_LENGTH      280.0f         // in Millimeter [mm]
+
+#define KINEMATIK_UPPER_ARM_LENGTH      2.8f         // in Millimeter [mm]
+#define KINEMATIK_LOWER_ARM_LENGTH      2.8f         // in Millimeter [mm]
 
 /******************************************************************************
  * Serial Port Config
@@ -60,7 +63,9 @@
 // Input
 #define IO_IN_SWITCH_RECORD             0
 #define IO_IN_PUSHBUTTON_START_STOP     1
-#define IO_IN_ROTARYSWITCH_MODE         2           // Pin 2-4
+#define IO_IN_ROTARYSWITCH_TEACH        2
+#define IO_IN_ROTARYSWITCH_EXERCISE     3
+#define IO_IN_ROTARYSWITCH_EVALUATE     4
 
 // Output
 #define IO_OUT_ACCU_INDICATION_LOW      14          // LED links

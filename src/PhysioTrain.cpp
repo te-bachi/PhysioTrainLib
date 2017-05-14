@@ -1,5 +1,6 @@
 
 #include "PhysioTrain.h"
+#include "Mode.h"
 #include "config.h"
 
 // pinPeripheral() function
@@ -12,10 +13,17 @@ KinematicModel  model;
 
 TwoWire         muxWire(&sercom1, 11, 13);
 SX1509          ioExpander;
+RTC_DS3231      rtc;
 //Timer           timer; // using millis() rather than the Timer object
 
+StateMachine    stateMachine;
 Switch          recordSwitch;
 PushButton      startStopButton;
+RotarySwitch    modeSwitch;
+
+File            teachFile;
+File            exerciseFile;
+File            resultFile;
 
 PhysioTrain::PhysioTrain()
 {
@@ -48,12 +56,17 @@ void PhysioTrain::begin()
 
     I2CMux::selectGpioExpander();
     ioExpander.begin(&Wire1);
-
     recordSwitch.begin(&ioExpander, IO_IN_SWITCH_RECORD);
     startStopButton.begin(&ioExpander, IO_IN_PUSHBUTTON_START_STOP);
+    modeSwitch.begin(&ioExpander, IO_IN_ROTARYSWITCH_TEACH, IO_IN_ROTARYSWITCH_EXERCISE, IO_IN_ROTARYSWITCH_EVALUATE);
+
+    I2CMux::selectRtc();
+    rtc.begin();
 
     cli.begin();
     imuLower.begin();
     imuUpper.begin();
-    //model.begin(&Wire3, &imuLower);
+
+    model.begin(&imuUpper, &imuLower);
+    model.setArmLength(KINEMATIK_UPPER_ARM_LENGTH, KINEMATIK_LOWER_ARM_LENGTH);
 }

@@ -7,6 +7,8 @@
 #include "config.h"
 #include "Quaternion.h"
 
+#include "avr/dtostrf.h"
+
 Quaternion::Quaternion()
 : _w(0), _x(0), _y(0), _z(0)
 {
@@ -28,6 +30,30 @@ Quaternion::Quaternion(const Quaternion& q)
 Quaternion::~Quaternion()
 {
     //
+}
+
+String
+Quaternion::toString()
+{
+    String res = "";
+    char str[33];
+
+    dtostrf(_w, 6, 4, str);
+    res += str;
+    res += " ";
+
+    dtostrf(_x, 6, 4, str);
+    res += str;
+    res += " ";
+
+    dtostrf(_y, 6, 4, str);
+    res += str;
+    res += " ";
+
+    dtostrf(_z, 6, 4, str);
+    res += str;
+
+    return res;
 }
 
 Quaternion

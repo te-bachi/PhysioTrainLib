@@ -54,17 +54,17 @@ String
 Position::toString()
 {
     String res = "";
-    char str[16];
+    char str[33];
 
-    dtostrf(_x, 8, 4, str);
+    dtostrf(_x, 6, 4, str);
     res += str;
     res += " ";
 
-    dtostrf(_y, 8, 4, str);
+    dtostrf(_y, 6, 4, str);
     res += str;
     res += " ";
 
-    dtostrf(_z, 8, 4, str);
+    dtostrf(_z, 6, 4, str);
     res += str;
 
     return res;
