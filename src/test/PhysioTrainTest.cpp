@@ -12,10 +12,24 @@
 #include "Transformation.h"
 #include "Filter.h"
 
+#include "Wire.h"
+TwoWire         muxWire;
+
 void
 print_q(const char *str, Quaternion &q)
 {
     printf("%s = %0.4f %0.4f %0.4f %0.4f\n", str, q.getW(), q.getX(), q.getY(), q.getZ());
+}
+
+
+void
+print_pos(const char *str, Position &p)
+{
+    printf("%s = [\n", str);
+    printf("  %8.4f\n", p.getX());
+    printf("  %8.4f\n", p.getY());
+    printf("  %8.4f\n", p.getZ());
+    printf("]\n");
 }
 
 void
@@ -60,7 +74,7 @@ main(int argc, char *argv[])
     print_rot("rot4", rot4);
     print_rot("rot5", rot5);
 
-    /*************************************************************************/
+    printf("/*************************************************************************/\n");
 
     Quaternion q7 = Quaternion( 0.4284f, -0.2863f, -0.0451f,  0.8559f);
     Quaternion q8 = Quaternion( 0.2776f,  0.8976f,  0.3408f, -0.0349f);
@@ -87,6 +101,35 @@ main(int argc, char *argv[])
     
     //t1.print(String("bla"));
     t1.toString();
+
+    printf("/*************************************************************************/\n");
+
+    Quaternion q10 = Quaternion( 0.9239f, -0.3827f,  0.0000f,  0.0000f);
+    Quaternion q11 = Quaternion( 0.8660f, -0.5000f,  0.0000f,  0.0000f);
+
+    print_q("q10", q10);
+    print_q("q11", q11);
+
+    RotationMatrix rot10 = q10.getRotationMatrix();
+    RotationMatrix rot11 = q11.getRotationMatrix();
+    Position       p10(0.0f, 0.0f,  0.0f);
+    Position       p11(0.0f, 0.0f, -2.8f);
+    Position       p12(0.0f, 0.0f, -2.8f);
+    Transformation t10(p10, rot10);
+    Transformation t11(p10, rot11);
+    Transformation t12(p10, rot11);
+
+    Position       p20 = t10 * p11;
+    Position       p21 = p20 + (t11 * p12);
+    Position       p22 = p21 + (t12 * p10);
+
+    print_trans("t10", t10);
+    print_trans("t11", t11);
+    print_trans("t12", t12);
+
+    print_pos("p20", p20);
+    print_pos("p21", p21);
+    print_pos("p22", p22);
 
     return 0;
 }

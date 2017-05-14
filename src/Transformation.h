@@ -34,6 +34,7 @@ class Transformation {
         String                  toStringMatrix();
 
         Transformation operator* (const Transformation &other);
+        Position       operator* (const Position &other);
 
 };
 

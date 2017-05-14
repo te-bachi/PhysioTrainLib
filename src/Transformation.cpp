@@ -144,3 +144,31 @@ Transformation::operator* (const Transformation &other)
 
     return res;
 }
+
+Position
+Transformation::operator* (const Position &other)
+{
+    float x;
+    float y;
+    float z;
+
+    x = this->a[0][0] * other.getX() +
+        this->a[0][1] * other.getY() +
+        this->a[0][2] * other.getZ() +
+        this->a[0][3] * 1.0;
+
+    y = this->a[1][0] * other.getX() +
+        this->a[1][1] * other.getY() +
+        this->a[1][2] * other.getZ() +
+        this->a[1][3] * 1.0;
+
+    z = this->a[2][0] * other.getX() +
+        this->a[2][1] * other.getY() +
+        this->a[2][2] * other.getZ() +
+        this->a[2][3] * 1.0;
+
+
+    Position p(x, y, z);
+
+    return p;
+}

@@ -33,19 +33,19 @@ Position::~Position()
 }
 
 float
-Position::getX()
+Position::getX() const
 {
     return _x;
 }
 
 float
-Position::getY()
+Position::getY() const
 {
     return _y;
 }
 
 float
-Position::getZ()
+Position::getZ() const
 {
     return _z;
 }
@@ -68,4 +68,17 @@ Position::toString()
     res += str;
 
     return res;
+}
+
+
+Position
+Position::operator+ (const Position &other)
+{
+    Position p;
+
+    p._x = this->_x + other._x;
+    p._y = this->_y + other._y;
+    p._z = this->_z + other._z;
+
+    return p;
 }

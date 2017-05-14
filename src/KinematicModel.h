@@ -32,6 +32,8 @@ class KinematicModel {
         void                    begin(IMU *upperImu, IMU *lowerImu);
         void                    reinitialize();
         void                    update();
+
+        void                    setArmLength(float upperArmLength, float lowerArmLength);
         void                    setUpperArmLength(float upperArmLength);
         void                    setLowerArmLength(float lowerArmLength);
 

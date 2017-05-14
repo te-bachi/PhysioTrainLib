@@ -22,12 +22,13 @@ class Position {
                                 Position(const Position& q);
         virtual                 ~Position();
 
-        float                   getX();
-        float                   getY();
-        float                   getZ();
+        float                   getX() const;
+        float                   getY() const;
+        float                   getZ() const;
 
         String                  toString();
 
+        Position operator+ (const Position &other);
 };
 
 #endif

@@ -1,6 +1,7 @@
 
 #include "config.h"
 #include "KinematicModel.h"
+#include "Transformation.h"
 
 KinematicModel::KinematicModel()
 : _upperImu(NULL), _lowerImu(NULL)
@@ -29,17 +30,13 @@ KinematicModel::begin(IMU *upperImu, IMU *lowerImu)
 void
 KinematicModel::reinitialize()
 {
-    float       qw = 0.0f;
-    float       qx = 0.0f;
-    float       qy = 0.0f;
-    float       qz = 0.0f;
+    /* Get quaternion from IMU */
+    _initUpperArmQuaternion = _upperImu->getQuaternion();
+    _initLowerArmQuaternion = _lowerImu->getQuaternion();
 
-
-    /* Request quaternion from Razor slave*/
-    //_initUpperArmQuaternion = requestQuaternion();
-
-    /* Read quaternion from own IMU */
-    //_initLowerArmQuaternion = _lowerImu->getQuaternion();
+    /* Invert both */
+    _initUpperArmQuaternion.inverse();
+    _initLowerArmQuaternion.inverse();
 
 
 }
@@ -47,17 +44,25 @@ KinematicModel::reinitialize()
 void
 KinematicModel::update()
 {
-    /*
-    Quaternion      upperQ = requestQuaternion();
+    Quaternion      upperQ = _upperImu->getQuaternion();
     Quaternion      lowerQ = _lowerImu->getQuaternion();
     Position        p1;
     Position        p2(0.0f, 0.0f, -_upperArmLength);
     Position        p3(0.0f, 0.0f, -_lowerArmLength);
-    RotationMatrix  rot1 = _lo;
-    RotationMatrix  rot2();
-    RotationMatrix  rot3();
-    Transformation t01()
-    */
+    RotationMatrix  rot1 = upperQ.getRotationMatrix();
+    RotationMatrix  rot2 = lowerQ.getRotationMatrix();
+    Transformation  t01(p1, rot1);
+    Transformation  t02(p1, rot2);
+    Transformation  t03(p1, rot2);
+
+
+}
+
+void
+KinematicModel::setArmLength(float upperArmLength, float lowerArmLength)
+{
+    this->_upperArmLength = upperArmLength;
+    this->_lowerArmLength = lowerArmLength;
 }
 
 void

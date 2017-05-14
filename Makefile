@@ -19,13 +19,15 @@ physiotrain_LIBRARIES    =
 physiotrain_SOURCE       = Acceleration.cpp \
                            EulerAngle.cpp \
                            Filter.cpp \
-                           Quaternion.cpp \
+                           I2CMux.cpp \
                            Position.cpp \
                            RotationMatrix.cpp \
-                           Transformation.cpp \
-                           KinematicModel.cpp \
                            IMU.cpp \
-                           test/PhysioTrain.cpp \
+                           KinematicModel.cpp \
+                           Quaternion.cpp \
+                           QuaternionFixedPoint.cpp \
+                           Transformation.cpp \
+                           test/PhysioTrainTest.cpp \
                            test/Wire.cpp \
                            test/WString.cpp \
                            test/SparkFunMPU9250-DMP.cpp \
