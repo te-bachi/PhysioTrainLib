@@ -21,6 +21,7 @@ Switch          recordSwitch;
 PushButton      startStopButton;
 RotarySwitch    modeSwitch;
 
+SdCard          sdCard;
 File            teachFile;
 File            exerciseFile;
 File            resultFile;
@@ -49,23 +50,27 @@ void PhysioTrain::begin()
 
     countdown();
 
+    /* Initialize SERCOM3 + SERCOM 1 as I2C masters */
     Wire3.begin();                  // SERCOM3 => internal IMU
     Wire1.begin();                  // SERCOM1 => external I2C Multiplexer
     pinPeripheral(11, PIO_SERCOM);  // Assign D11 to SERCOM
     pinPeripheral(13, PIO_SERCOM);  // Assign D13 to SERCOM
 
+    /* GPIO Expander */
     I2CMux::selectGpioExpander();
     ioExpander.begin(&Wire1);
     recordSwitch.begin(&ioExpander, IO_IN_SWITCH_RECORD);
     startStopButton.begin(&ioExpander, IO_IN_PUSHBUTTON_START_STOP);
     modeSwitch.begin(&ioExpander, IO_IN_ROTARYSWITCH_TEACH, IO_IN_ROTARYSWITCH_EXERCISE, IO_IN_ROTARYSWITCH_EVALUATE);
 
+    /* RTC */
     I2CMux::selectRtc();
     rtc.begin();
 
     cli.begin();
     imuLower.begin();
     imuUpper.begin();
+    //sdCard.begin();
 
     model.begin(&imuUpper, &imuLower);
     model.setArmLength(KINEMATIK_UPPER_ARM_LENGTH, KINEMATIK_LOWER_ARM_LENGTH);

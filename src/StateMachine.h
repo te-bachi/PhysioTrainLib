@@ -14,21 +14,26 @@ class StateMachine {
 
     typedef enum _State {
         NONE,
-        TEACH,
+        TEACH,              // Switch to Teach mode
+        TEACH_WAIT,         // Wait
         TEACH_BEGIN,
         TEACH_RUN,
         TEACH_END,
-        EXERCISE,
+        EXERCISE,           // Switch to Exercise mode
+        EXERCISE_WAIT,      // Wait
         EXERCISE_BEGIN,
         EXERCISE_RUN,
         EXERCISE_END,
-        EVALUATE,
+        EVALUATE,           // Switch to Evaluate mode
+        EVALUATE_WAIT,
+        EVALUATE_SERIAL,
+        ERROR,              // Start-Stop-Button pressed while changing mode => release button first!
         START
     } State;
 
     private:
         State           _currentState;
-        State           _nextState;
+        //State           _nextState;
         Mode            _mode;
 
     public:
@@ -40,7 +45,8 @@ class StateMachine {
         String          toString();
 
     private:
-        void            checkState(Mode &mode);
+        bool            checkState(Mode &mode);
+        bool            checkStateOnRun(Mode &mode, State state);
         State           nextState(Mode &mode);
 
 };

@@ -34,6 +34,7 @@ extern Switch           recordSwitch;
 extern PushButton       startStopButton;
 extern RotarySwitch     modeSwitch;
 
+extern SdCard           sdCard;
 extern File             teachFile;
 extern File             exerciseFile;
 extern File             resultFile;

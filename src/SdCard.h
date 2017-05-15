@@ -7,10 +7,13 @@
 #ifndef __SD_CARD_H__
 #define __SD_CARD_H__
 
+#include <inttypes.h>
+
+#include <SPI.h>
 #include <SPI.h>
 #include <SD.h>
+#include <RTClib.h>
 
-#include "PhysioTrain.h"
 #include "Position.h"
 #include "Quaternion.h"
 
@@ -27,7 +30,7 @@ class SdCard {
         bool        init;
         Sd2Card     card;
         SdVolume    volume;
-        SdFile      root;
+        File        root;
 
     public:
                     SdCard();
@@ -35,20 +38,34 @@ class SdCard {
 
         bool        begin();
         bool        isInitialized();
-//        File        openRead(PhysioTrain::Mode mode);
-//        File        openWrite(PhysioTrain::Mode mode);
-        void        close(File &file);
+
+        void        openRoot();
+        void        rewindRoot();
+        void        closeRoot();
+
+        void        write(File &file, DateTime &t);
         void        write(File &file, Quaternion &upperArmQ, Position &upperArmPos, Quaternion &lowerArmQ, Position &lowerArmPos);
 
-        File        openTeachFile(bool *error);
-        File        replaceTeachFile();
-        File        openNextExerciseFile(bool *error);
-        File        openNextResultFile(bool *error);
-        void        deleteExerciseFiles();
+        File        replaceTeachFile(DateTime &t);   // Write
+        File        openNextTeachFile();             // Read
+
+        File        openExerciseFile(DateTime &t);   // Write
+        File        openNextExerciseFile();          // Read
+        void        deleteExerciseFiles();           // Delete all
+
+        File        openResultFile(DateTime &t);     // Write
+        File        openNextResultFile();            // Read
+        void        deleteResultFiles();             // Delete all
 
     private:
-        String      getNextExerciseFile(bool *error);
-        String      getNextResultFile(bool *error);
+        String      getDateFileSuffix(DateTime &t);
+        void        deleteFiles(String &pattern);
+        File        findFile(String &pattern);
+
+        String      getNextTeachFileSuffix();
+        String      getNextExerciseFileSuffix();
+        String      getNextResultFileSuffix();
+
 };
 
 #endif
