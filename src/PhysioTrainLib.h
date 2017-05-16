@@ -27,5 +27,6 @@
 #include "Switch.h"
 #include "Timer.h"
 #include "Transformation.h"
+#include "Vibra.h"
 
 #endif

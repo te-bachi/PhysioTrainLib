@@ -13,17 +13,24 @@ class Switch {
     private:
         SX1509         *_ioExpander;
         int             _pin;
-        int             _prev;  // timestamp
-        bool            _pos;   // switch position
-        bool            _value; // buffered value to be returned
+        int             _prev;              // timestamp
+        bool             _pos;              // switch position
+        bool            _togglePos;         // buffered value to be returned
+        bool            _toggleValue;       // buffered value to be returned
+        bool            _incrementePos;     // buffered value to be returned
+        int             _incrementValue;    // buffered increment value to be returned
 
     public:
                         Switch();
         virtual         ~Switch();
 
         void            begin(SX1509 *ioExpander, int pin);
-        bool            getValue();
+        bool            getPosition();
+        bool            getToggleValue();
+        int             getIncrementValue();
+        void            resetIncrementValue();
 
+    private:
 };
 
 #endif

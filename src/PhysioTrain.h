@@ -15,29 +15,39 @@
 #include "RTClib.h"
 #include "PhysioTrainLib.h"
 
-#define Wire1           muxWire
-#define Wire3           Wire
+#define Wire1               muxWire
+#define Wire3               Wire
 
-extern CLI              cli;
-extern IMU              imuLower;
-extern IMU              imuUpper;
-extern KinematicModel   model;
+extern CLI                  cli;
+extern IMU                  imuLower;
+extern IMU                  imuUpper;
+extern KinematicModel       model;
 
-extern TwoWire          muxWire;
-extern SX1509           ioExpander;
-extern RTC_DS3231       rtc;
+extern TwoWire              muxWire;
+extern SX1509               ioExpander;
+extern RTC_DS3231           rtc;
+extern Vibra                vibra;
 
-//extern Timer            timer; // using millis() rather than the Timer object
+extern StateMachine         stateMachine;  
+extern Switch               recordSwitch;
+extern PushButton           startStopButton;
+extern RotarySwitch         modeSwitch;
 
-extern StateMachine     stateMachine;
-extern Switch           recordSwitch;
-extern PushButton       startStopButton;
-extern RotarySwitch     modeSwitch;
+extern SdCard               sdCard;
+extern File                 teachFile;
+extern File                 exerciseFile;
+extern File                 resultFile;
 
-extern SdCard           sdCard;
-extern File             teachFile;
-extern File             exerciseFile;
-extern File             resultFile;
+/*** GLOBAL VARIABLES ARE BAD, BUT STRAIGHT FORWARD ***/
+
+extern StateMachine::State  state;
+extern Quaternion           q1;
+extern Quaternion           q2;
+
+extern Mode                 mode;
+extern bool                 recordValue;
+extern bool                 startStopValue;
+extern bool                 startStopSaved;
 
 class PhysioTrain {
 

@@ -10,6 +10,12 @@
 #include <Arduino.h>
 
 /******************************************************************************
+ * STARTUP
+ *****************************************************************************/
+
+#define PHYSIOTRAIN_COUNTDOWN           3
+
+/******************************************************************************
  * Kinematik
  *****************************************************************************/
 
@@ -23,7 +29,7 @@
  * Serial Port Config
  *****************************************************************************/
 
-#define SERIAL_BAUD_RATE                115200      // Serial port baud
+#define SERIAL_BAUD_RATE                115200      // Serial port baud rate
 
 
 /******************************************************************************
@@ -70,6 +76,8 @@
 // Output
 #define IO_OUT_ACCU_INDICATION_LOW      14          // LED links
 #define IO_OUT_ACCU_INDICATION_HIGH     15          // LED rechts
+#define IO_OUT_VIBRA_PWM                9           // Auf dem IO Breakoutboard
+#define IO_OUT_VIBRA_ENABLE             8           // Auf dem IO Breakoutboard
 
 /******************************************************************************
  * TIME AND DATE

@@ -10,9 +10,9 @@
 
 const int    SdCard::SD_CHIP_SELECT_PIN         = 38;
 const int    SdCard::LOG_FILE_INDEX_MAX         = 1024;
-const char  *SdCard::LOG_FILE_PREFIX_TEACH      = "teach";
-const char  *SdCard::LOG_FILE_PREFIX_EXERCISE   = "exercise_";
-const char  *SdCard::LOG_FILE_PREFIX_RESULT     = "result_";
+const char  *SdCard::LOG_FILE_PREFIX_TEACH      = "t_";
+const char  *SdCard::LOG_FILE_PREFIX_EXERCISE   = "e_";
+const char  *SdCard::LOG_FILE_PREFIX_RESULT     = "r_";
 const char  *SdCard::LOG_FILE_SUFFIX            = ".txt";
 
 
@@ -38,7 +38,6 @@ SdCard::begin()
         return false;
     }
 
-    /*
     if (!card.init(SPI_HALF_SPEED, SD_CHIP_SELECT_PIN)) {
         SerialUSB.println("SD.begin(SD_CHIP_SELECT_PIN) failed!");
       return false;
@@ -48,14 +47,9 @@ SdCard::begin()
         SerialUSB.println("SD.begin(SD_CHIP_SELECT_PIN) failed!");
       return false;
     }
-    */
 
     init = true;
 
-    // Can't create new file when opened!!
-    ///root = SD.open("/");
-
-    SerialUSB.println("SdCard::begin() end");
     return true;
 }
 
@@ -320,9 +314,6 @@ SdCard::getNextTeachFileSuffix()
         if (!SD.exists(filename)) {
             return filename;
         }
-
-        /* Otherwise increment the index, and try again */
-        i++;
     }
 
     return "";
@@ -345,9 +336,6 @@ SdCard::getNextExerciseFileSuffix()
         if (!SD.exists(filename)) {
             return filename;
         }
-
-        /* Otherwise increment the index, and try again */
-        i++;
     }
 
     return "";
@@ -374,9 +362,6 @@ SdCard::getNextResultFileSuffix()
         if (!SD.exists(filename)) {
             return filename;
         }
-
-        /* Otherwise increment the index, and try again */
-        i++;
     }
 
     return "";

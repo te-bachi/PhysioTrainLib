@@ -20,6 +20,38 @@ StateMachine::~StateMachine()
 
 }
 
+StateMachine::State
+StateMachine::getState()
+{
+    return _currentState;
+}
+
+String
+StateMachine::toString()
+{
+    String str;
+    switch (_currentState) {
+        case State::NONE:               str = "NONE";               break;
+        case State::TEACH:              str = "TEACH";              break;
+        case State::TEACH_WAIT:         str = "TEACH_WAIT";         break;
+        case State::TEACH_BEGIN:        str = "TEACH_BEGIN";        break;
+        case State::TEACH_RUN:          str = "TEACH_RUN";          break;
+        case State::TEACH_END:          str = "TEACH_END";          break;
+        case State::EXERCISE:           str = "EXERCISE";           break;
+        case State::EXERCISE_WAIT:      str = "EXERCISE_WAIT";      break;
+        case State::EXERCISE_BEGIN:     str = "EXERCISE_BEGIN";     break;
+        case State::EXERCISE_RUN:       str = "EXERCISE_RUN";       break;
+        case State::EXERCISE_END:       str = "EXERCISE_END";       break;
+        case State::EVALUATE:           str = "EVALUATE";           break;
+        case State::EVALUATE_WAIT:      str = "EVALUATE_WAIT";      break;
+        case State::EVALUATE_SERIAL:    str = "EVALUATE_SERIAL";    break;
+        case State::ERROR:              str = "ERROR";              break;
+        case State::START:              str = "START";              break;
+        default:                        str = "<EMPTY>";            break;
+    }
+    return str;
+}
+
 void
 StateMachine::run(Mode &mode, bool start)
 {
@@ -51,9 +83,7 @@ StateMachine::run(Mode &mode, bool start)
         case State::TEACH_BEGIN:
             now             = rtc.now();
             teachFile       = sdCard.replaceTeachFile(now);
-            if (!teachFile) {
-                SerialUSB.println("teachFile <NULL>");
-            }
+
             _currentState = State::TEACH_RUN;
             break;
 
@@ -106,14 +136,6 @@ StateMachine::run(Mode &mode, bool start)
             teachFile       = sdCard.openNextTeachFile();
             exerciseFile    = sdCard.openExerciseFile(now);
             resultFile      = sdCard.openResultFile(now);
-
-            if (!teachFile) {
-                SerialUSB.println("teachFile <NULL>");
-            }
-
-            if (!exerciseFile) {
-                SerialUSB.println("exerciseFile <NULL>");
-            }
 
             _currentState = State::EXERCISE_RUN;
             break;
@@ -185,6 +207,8 @@ StateMachine::run(Mode &mode, bool start)
                 /* Start => Error */
                 if (!start) {
                     _currentState = State::EVALUATE;
+                } else {
+                    evaluateSerial();
                 }
             }
             break;
@@ -197,35 +221,10 @@ StateMachine::run(Mode &mode, bool start)
 
         case State::START:
         default:
+            vibra.start(800);
             _currentState = nextState(mode);
             break;
     }
-}
-
-String
-StateMachine::toString()
-{
-    String str;
-    switch (_currentState) {
-        case State::NONE:               str = "NONE";               break;
-        case State::TEACH:              str = "TEACH";              break;
-        case State::TEACH_WAIT:         str = "TEACH_WAIT";         break;
-        case State::TEACH_BEGIN:        str = "TEACH_BEGIN";        break;
-        case State::TEACH_RUN:          str = "TEACH_RUN";          break;
-        case State::TEACH_END:          str = "TEACH_END";          break;
-        case State::EXERCISE:           str = "EXERCISE";           break;
-        case State::EXERCISE_WAIT:      str = "EXERCISE_WAIT";      break;
-        case State::EXERCISE_BEGIN:     str = "EXERCISE_BEGIN";     break;
-        case State::EXERCISE_RUN:       str = "EXERCISE_RUN";       break;
-        case State::EXERCISE_END:       str = "EXERCISE_END";       break;
-        case State::EVALUATE:           str = "EVALUATE";           break;
-        case State::EVALUATE_WAIT:      str = "EVALUATE_WAIT";      break;
-        case State::EVALUATE_SERIAL:    str = "EVALUATE_SERIAL";    break;
-        case State::ERROR:              str = "ERROR";              break;
-        case State::START:              str = "START";              break;
-        default:                        str = "<EMPTY>";            break;
-    }
-    return str;
 }
 
 
@@ -279,3 +278,59 @@ StateMachine::nextState(Mode &mode)
     return State::NONE;
 }
 
+
+void
+StateMachine::evaluateSerial()
+{
+    static int u = 0;
+
+    if (u % 20 == 0) {
+        String line;
+
+        model.update();
+        Position pUpper = model.getUpperArmPosition();
+        Position pLower = model.getLowerArmPosition();
+
+        line   = String("[ ");
+        line  += String(millis());
+        line  += String(" ] ");
+
+        line  += String("[ ");
+        line  += String(q1.getW(), 4) + ", ";
+        line  += String(q1.getX(), 4) + ", ";
+        line  += String(q1.getY(), 4) + ", ";
+        line  += String(q1.getZ(), 4);
+        line  += String(" ] ");
+
+        line  += String("[ ");
+        line  += String(pUpper.getX(), 4) + ", ";
+        line  += String(pUpper.getY(), 4) + ", ";
+        line  += String(pUpper.getZ(), 4);
+        line  += String(" ] ");
+
+        line  += String("[ ");
+        line  += String(q2.getW(), 4) + ", ";
+        line  += String(q2.getX(), 4) + ", ";
+        line  += String(q2.getY(), 4) + ", ";
+        line  += String(q2.getZ(), 4);
+        line  += String(" ] ");
+
+        line  += String("[ ");
+        line  += String(pLower.getX(), 4) + ", ";
+        line  += String(pLower.getY(), 4) + ", ";
+        line  += String(pLower.getZ(), 4);
+        line  += String(" ] ");
+
+        line  += String(" mode=");
+        line  += String(mode.toString());
+
+        line  += String(" record=");
+        line  += String(recordValue);
+        line  += String(" start=");
+        line  += String(startStopValue);
+
+        SerialUSB.println(line);
+
+    }
+    u++;
+}

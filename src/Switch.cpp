@@ -5,7 +5,7 @@
 #include "config.h"
 
 Switch::Switch()
-: _ioExpander(NULL), _prev(0), _pos(false), _value(false)
+: _ioExpander(NULL), _prev(0), _pos(false), _toggleValue(false)
 {
 
 }
@@ -23,28 +23,66 @@ Switch::begin(SX1509 *ioExpander, int pin)
 
     I2CMux::selectGpioExpander();
     _ioExpander->pinMode(_pin, INPUT);
-    _value = _ioExpander->digitalRead(_pin);
+    _toggleValue = _ioExpander->digitalRead(_pin);
 }
 
-
 bool
-Switch::getValue()
+Switch::getPosition()
 {
-    bool    pos;
     int     curr = millis();
     int     prev = _prev;
 
     if (prev == 0 || (curr - prev) > TIME_DEBOUNCING_DELAY_MS) {
         I2CMux::selectGpioExpander();
-        pos = _ioExpander->digitalRead(_pin);
-
-        /* switch is pressed */
-        if (pos == HIGH && pos != _pos) {
-            /* invert value */
-            _value = !_value;
-        }
-        _pos = pos;
+        _pos = _ioExpander->digitalRead(_pin);
     }
 
-    return _value;
+    return _pos;
+}
+
+
+bool
+Switch::getToggleValue()
+{
+    bool    pos = getPosition();
+
+    /* switch is pressed */
+    if (pos == HIGH && _togglePos == LOW) {
+        _togglePos = HIGH;
+
+        /* invert value */
+        _toggleValue = !_toggleValue;
+
+    /* */
+    } else if (pos == LOW) {
+        _togglePos = LOW;
+    }
+
+    return _toggleValue;
+}
+
+int
+Switch::getIncrementValue()
+{
+    bool    pos = getPosition();
+
+    /* switch is pressed */
+    if (pos == HIGH && _incrementePos == LOW) {
+        _incrementePos = HIGH;
+
+        /* increment */
+        _incrementValue++;
+
+    /* */
+    } else if (pos == LOW) {
+        _incrementePos = LOW;
+    }
+
+    return _incrementValue;
+}
+
+void
+Switch::resetIncrementValue()
+{
+    _incrementValue = 0;
 }

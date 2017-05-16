@@ -6,25 +6,35 @@
 // pinPeripheral() function
 #include "wiring_private.h"
 
-CLI             cli;
-IMU             imuLower(IMU_SELECT_INTERNAL);
-IMU             imuUpper(IMU_SELECT_EXTERNAL);
-KinematicModel  model;
+CLI                     cli;
+IMU                     imuLower(IMU_SELECT_INTERNAL);
+IMU                     imuUpper(IMU_SELECT_EXTERNAL);
+KinematicModel          model;
 
-TwoWire         muxWire(&sercom1, 11, 13);
-SX1509          ioExpander;
-RTC_DS3231      rtc;
-//Timer           timer; // using millis() rather than the Timer object
+TwoWire                 muxWire(&sercom1, 11, 13);
+SX1509                  ioExpander;
+RTC_DS3231              rtc;
+Vibra                   vibra;
+                        
+StateMachine            stateMachine;
+Switch                  recordSwitch;
+PushButton              startStopButton;
+RotarySwitch            modeSwitch;
 
-StateMachine    stateMachine;
-Switch          recordSwitch;
-PushButton      startStopButton;
-RotarySwitch    modeSwitch;
+SdCard                  sdCard;
+File                    teachFile;
+File                    exerciseFile;
+File                    resultFile;
 
-SdCard          sdCard;
-File            teachFile;
-File            exerciseFile;
-File            resultFile;
+
+StateMachine::State     state;
+Quaternion              q1;
+Quaternion              q2;
+
+Mode                    mode;
+bool                    recordValue;
+bool                    startStopValue;
+bool                    startStopSaved = false;
 
 PhysioTrain::PhysioTrain()
 {
@@ -38,7 +48,7 @@ PhysioTrain::~PhysioTrain()
 
 static void countdown()
 {
-    for (int i = 5; i > 0; i--) {
+    for (int i = PHYSIOTRAIN_COUNTDOWN; i > 0; i--) {
         SerialUSB.println(i);
         delay(1000);
     }
@@ -67,10 +77,13 @@ void PhysioTrain::begin()
     I2CMux::selectRtc();
     rtc.begin();
 
+    /* Vibra */
+    vibra.begin(&ioExpander, IO_OUT_VIBRA_PWM, IO_OUT_VIBRA_ENABLE);
+
     cli.begin();
     imuLower.begin();
     imuUpper.begin();
-    //sdCard.begin();
+    sdCard.begin();
 
     model.begin(&imuUpper, &imuLower);
     model.setArmLength(KINEMATIK_UPPER_ARM_LENGTH, KINEMATIK_LOWER_ARM_LENGTH);
