@@ -21,6 +21,10 @@ Switch                  recordSwitch;
 PushButton              startStopButton;
 RotarySwitch            modeSwitch;
 
+Led                     ledLeft;
+Led                     ledRight;
+Accumulator             accu;
+
 SdCard                  sdCard;
 File                    teachFile;
 File                    exerciseFile;
@@ -71,6 +75,8 @@ void PhysioTrain::begin()
     ioExpander.begin(&Wire1);
     recordSwitch.begin(&ioExpander, IO_IN_SWITCH_RECORD);
     startStopButton.begin(&ioExpander, IO_IN_PUSHBUTTON_START_STOP);
+    ledLeft.begin(&ioExpander, IO_OUT_ACCU_INDICATION_LOW);
+    ledRight.begin(&ioExpander, IO_OUT_ACCU_INDICATION_HIGH);
     modeSwitch.begin(&ioExpander, IO_IN_ROTARYSWITCH_TEACH, IO_IN_ROTARYSWITCH_EXERCISE, IO_IN_ROTARYSWITCH_EVALUATE);
 
     /* RTC */
@@ -79,6 +85,9 @@ void PhysioTrain::begin()
 
     /* Vibra */
     vibra.begin(&ioExpander, IO_OUT_VIBRA_PWM, IO_OUT_VIBRA_ENABLE);
+
+    /* Accumulator */
+    accu.begin(IO_IN_ACCU_MEASURE, &ledLeft, &ledRight);
 
     cli.begin();
     imuLower.begin();

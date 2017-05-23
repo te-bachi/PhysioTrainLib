@@ -33,6 +33,10 @@ extern Switch               recordSwitch;
 extern PushButton           startStopButton;
 extern RotarySwitch         modeSwitch;
 
+extern Led                  ledLeft;
+extern Led                  ledRight;
+extern Accumulator          accu;
+
 extern SdCard               sdCard;
 extern File                 teachFile;
 extern File                 exerciseFile;

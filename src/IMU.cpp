@@ -70,6 +70,7 @@ IMU::begin()
 
     dmpFeatureMask |= DMP_FEATURE_SEND_CAL_GYRO;
     dmpFeatureMask |= DMP_FEATURE_SEND_RAW_ACCEL;
+    dmpFeatureMask |= DMP_FEATURE_GYRO_CAL;
     dmpFeatureMask |= DMP_FEATURE_6X_LP_QUAT;
     
     // Initialize the DMP, and set the FIFO's update rate

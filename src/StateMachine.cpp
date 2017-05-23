@@ -55,7 +55,7 @@ StateMachine::toString()
 void
 StateMachine::run(Mode &mode, bool start)
 {
-    DateTime now;
+    DateTime    now;
 
     switch (_currentState) {
         case State::NONE:
@@ -81,8 +81,16 @@ StateMachine::run(Mode &mode, bool start)
             break;
 
         case State::TEACH_BEGIN:
+
+            I2CMux::selectRtc();
             now             = rtc.now();
+
             teachFile       = sdCard.replaceTeachFile(now);
+//            teachFile.println("hallo");
+//            teachFile.println("welt");
+//            teachFile.println("bla");
+
+            _teachRunInc   = 0;
 
             _currentState = State::TEACH_RUN;
             break;
@@ -96,13 +104,18 @@ StateMachine::run(Mode &mode, bool start)
 
                 /* Run */
                 } else {
-
+                    teachRun();
                 }
             }
             break;
 
         case State::TEACH_END:
-            teachFile.close();
+        {
+            I2CMux::selectRtc();
+            now = rtc.now();
+
+            sdCard.closeTeachFile(teachFile, now);
+
             /* Good */
             if (!start) {
                 _currentState = State::TEACH;
@@ -112,6 +125,7 @@ StateMachine::run(Mode &mode, bool start)
                 _currentState = State::ERROR;
             }
             break;
+        }
 
         case State::EXERCISE:
             if (start) {
@@ -132,13 +146,47 @@ StateMachine::run(Mode &mode, bool start)
             break;
 
         case State::EXERCISE_BEGIN:
-            now             = rtc.now();
-            teachFile       = sdCard.openNextTeachFile();
-            exerciseFile    = sdCard.openExerciseFile(now);
-            resultFile      = sdCard.openResultFile(now);
+        {
+            String line;
 
-            _currentState = State::EXERCISE_RUN;
+            _start = millis();
+
+            I2CMux::selectRtc();
+            now = rtc.now();
+
+            sdCard.openRoot();
+            sdCard.rewindRoot();
+            teachFile = sdCard.openNextTeachFile();
+            sdCard.closeRoot();
+
+            /* teach file not found */
+            if (!teachFile) {
+                _currentState = State::ERROR;
+
+            /* teach file found: open exercise and result file */
+            } else {
+
+                line = teachFile.readStringUntil('\n');
+                SerialUSB.println(line);
+
+                exerciseFile    = sdCard.openExerciseFile(now);
+                resultFile      = sdCard.openResultFile(now);
+
+                if (resultFile) {
+                    resultFile.println("80:0");
+                    resultFile.println("100:1");
+                    resultFile.println("60:0");
+                    resultFile.println("75:0");
+                    resultFile.println("80:0");
+                    resultFile.println("90:0");
+                    resultFile.println("0:0");
+                    resultFile.println("20:2");
+                }
+
+                _currentState = State::EXERCISE_RUN;
+            }
             break;
+        }
 
         case State::EXERCISE_RUN:
             if (!checkStateOnRun(mode, State::EXERCISE_END)) {
@@ -149,15 +197,19 @@ StateMachine::run(Mode &mode, bool start)
 
                 /* Run */
                 } else {
-
+                    exerciseRun();
                 }
             }
             break;
 
         case State::EXERCISE_END:
+        {
+            I2CMux::selectRtc();
+            now = rtc.now();
+
             teachFile.close();
-            exerciseFile.close();
-            resultFile.close();
+            sdCard.closeExerciseFile(exerciseFile, now);
+            sdCard.closeResultFile(resultFile, now);
 
             /* Good */
             if (!start) {
@@ -168,13 +220,14 @@ StateMachine::run(Mode &mode, bool start)
                 _currentState = State::ERROR;
             }
             break;
+        }
 
         case State::EVALUATE:
             if (start) {
                 _currentState = State::ERROR;
             } else {
 
-                /**/
+                /*
                 sdCard.openRoot();
                 sdCard.rewindRoot();
                 File file = sdCard.openNextExerciseFile();
@@ -185,6 +238,7 @@ StateMachine::run(Mode &mode, bool start)
                     file = sdCard.openNextExerciseFile();
                 }
                 sdCard.closeRoot();
+                */
 
                 _mode         = mode;
                 _currentState = State::EVALUATE_WAIT;
@@ -192,14 +246,52 @@ StateMachine::run(Mode &mode, bool start)
             break;
 
         case State::EVALUATE_WAIT:
+        {
             if (!checkState(mode)) {
 
                 /* Start Serial*/
                 if (start) {
                     _currentState = State::EVALUATE_SERIAL;
+
+                /* Checks for new serial input */
+                } else if (SerialUSB.available()) {
+                    char action;
+
+                    SerialUSB.println("Serial available");
+
+                    action = SerialUSB.read();
+                    switch (action) {
+                        /* Download teach files*/
+                        case 't':
+                            SerialUSB.println("Download teach files");
+                            sdCard.downloadTeachFiles();
+                            break;
+
+                        /* Download exercise files*/
+                        case 'e':
+                            SerialUSB.println("Download exercise files");
+                            sdCard.downloadExerciseFiles();
+                            break;
+
+                        /* Download result files*/
+                        case 'r':
+                            SerialUSB.println("Download result files");
+                            sdCard.downloadResultFiles();
+                            break;
+
+                       /* Delete exercise and result files */
+                        case 'd':
+                            SerialUSB.println("Delete exercise and result files");
+                            sdCard.deleteExerciseFiles();
+                            sdCard.deleteResultFiles();
+                            break;
+
+                    }
+
                 }
             }
             break;
+        }
 
         case State::EVALUATE_SERIAL:
             if (!checkState(mode)) {
@@ -278,59 +370,155 @@ StateMachine::nextState(Mode &mode)
     return State::NONE;
 }
 
+void
+StateMachine::teachRun()
+{
+    static int k = 0;
+    String line;
+
+    if (k % 20 == 0) {
+        int inc = recordSwitch.getIncrementValue();
+        if (inc > _teachRunInc) {
+            _teachRunInc = inc;
+            //SerialUSB.print("inc");
+            //SerialUSB.println(inc);
+            line = getPositionString();
+            teachFile.println(line);
+            vibra.start(600);
+        }
+    }
+}
+
+void
+StateMachine::exerciseRun()
+{
+    static int k = 0;
+    String line;
+
+    if (k % 60 == 0) {
+        line = getPositionQuaternionString();
+        exerciseFile.println(line);
+    }
+}
 
 void
 StateMachine::evaluateSerial()
 {
     static int u = 0;
+    String line;
 
     if (u % 20 == 0) {
-        String line;
-
-        model.update();
-        Position pUpper = model.getUpperArmPosition();
-        Position pLower = model.getLowerArmPosition();
-
-        line   = String("[ ");
-        line  += String(millis());
-        line  += String(" ] ");
-
-        line  += String("[ ");
-        line  += String(q1.getW(), 4) + ", ";
-        line  += String(q1.getX(), 4) + ", ";
-        line  += String(q1.getY(), 4) + ", ";
-        line  += String(q1.getZ(), 4);
-        line  += String(" ] ");
-
-        line  += String("[ ");
-        line  += String(pUpper.getX(), 4) + ", ";
-        line  += String(pUpper.getY(), 4) + ", ";
-        line  += String(pUpper.getZ(), 4);
-        line  += String(" ] ");
-
-        line  += String("[ ");
-        line  += String(q2.getW(), 4) + ", ";
-        line  += String(q2.getX(), 4) + ", ";
-        line  += String(q2.getY(), 4) + ", ";
-        line  += String(q2.getZ(), 4);
-        line  += String(" ] ");
-
-        line  += String("[ ");
-        line  += String(pLower.getX(), 4) + ", ";
-        line  += String(pLower.getY(), 4) + ", ";
-        line  += String(pLower.getZ(), 4);
-        line  += String(" ] ");
-
-        line  += String(" mode=");
-        line  += String(mode.toString());
-
-        line  += String(" record=");
-        line  += String(recordValue);
-        line  += String(" start=");
-        line  += String(startStopValue);
-
+        line = getSerialString();
         SerialUSB.println(line);
 
     }
     u++;
+}
+
+
+String
+StateMachine::getPositionString()
+{
+    String line;
+
+    Position pLower = model.getLowerArmPosition();
+
+    line   = String(pLower.getX(), 4) + " ";
+    line  += String(pLower.getY(), 4) + " ";
+    line  += String(pLower.getZ(), 4);
+
+    return line;
+}
+
+String
+StateMachine::getPositionQuaternionString()
+{
+    String line;
+    int    diff = millis() - _start;
+
+    Position pUpper = model.getUpperArmPosition();
+    Position pLower = model.getLowerArmPosition();
+
+    line   = String("[ ");
+    line  += String(diff);
+    line  += String(" ] ");
+
+    line  += String("[ ");
+    line  += String(q1.getW(), 4) + ", ";
+    line  += String(q1.getX(), 4) + ", ";
+    line  += String(q1.getY(), 4) + ", ";
+    line  += String(q1.getZ(), 4);
+    line  += String(" ] ");
+
+    line  += String("[ ");
+    line  += String(pUpper.getX(), 4) + ", ";
+    line  += String(pUpper.getY(), 4) + ", ";
+    line  += String(pUpper.getZ(), 4);
+    line  += String(" ] ");
+
+    line  += String("[ ");
+    line  += String(q2.getW(), 4) + ", ";
+    line  += String(q2.getX(), 4) + ", ";
+    line  += String(q2.getY(), 4) + ", ";
+    line  += String(q2.getZ(), 4);
+    line  += String(" ] ");
+
+    line  += String("[ ");
+    line  += String(pLower.getX(), 4) + ", ";
+    line  += String(pLower.getY(), 4) + ", ";
+    line  += String(pLower.getZ(), 4);
+    line  += String(" ] ");
+
+    return line;
+}
+
+String
+StateMachine::getSerialString()
+{
+    String line;
+
+    Position pUpper = model.getUpperArmPosition();
+    Position pLower = model.getLowerArmPosition();
+
+    line   = String("[ ");
+    line  += String(millis());
+    line  += String(" ] ");
+
+    line  += String("[ ");
+    line  += String(q1.getW(), 4) + ", ";
+    line  += String(q1.getX(), 4) + ", ";
+    line  += String(q1.getY(), 4) + ", ";
+    line  += String(q1.getZ(), 4);
+    line  += String(" ] ");
+
+    line  += String("[ ");
+    line  += String(pUpper.getX(), 4) + ", ";
+    line  += String(pUpper.getY(), 4) + ", ";
+    line  += String(pUpper.getZ(), 4);
+    line  += String(" ] ");
+
+    line  += String("[ ");
+    line  += String(q2.getW(), 4) + ", ";
+    line  += String(q2.getX(), 4) + ", ";
+    line  += String(q2.getY(), 4) + ", ";
+    line  += String(q2.getZ(), 4);
+    line  += String(" ] ");
+
+    line  += String("[ ");
+    line  += String(pLower.getX(), 4) + ", ";
+    line  += String(pLower.getY(), 4) + ", ";
+    line  += String(pLower.getZ(), 4);
+    line  += String(" ] ");
+
+    /*
+    line  += String(" mode=");
+    line  += String(mode.toString());
+    */
+
+    line  += String(" record=");
+    line  += String(recordValue);
+    line  += String(" start=");
+    line  += String(startStopValue);
+
+    return line;
 }

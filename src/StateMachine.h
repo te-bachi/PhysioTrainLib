@@ -37,6 +37,9 @@ class StateMachine {
         //State           _nextState;
         Mode            _mode;
 
+        int             _teachRunInc;
+        int             _start;
+
     public:
                         StateMachine();
         virtual         ~StateMachine();
@@ -51,7 +54,13 @@ class StateMachine {
         bool            checkStateOnRun(Mode &mode, State state);
         State           nextState(Mode &mode);
 
+        void            teachRun();
+        void            exerciseRun();
         void            evaluateSerial();
+
+        String          getPositionString();
+        String          getPositionQuaternionString();
+        String          getSerialString();
 
 };
 

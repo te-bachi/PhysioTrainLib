@@ -10,9 +10,9 @@
 
 const int    SdCard::SD_CHIP_SELECT_PIN         = 38;
 const int    SdCard::LOG_FILE_INDEX_MAX         = 1024;
-const char  *SdCard::LOG_FILE_PREFIX_TEACH      = "t_";
-const char  *SdCard::LOG_FILE_PREFIX_EXERCISE   = "e_";
-const char  *SdCard::LOG_FILE_PREFIX_RESULT     = "r_";
+const char  *SdCard::LOG_FILE_PREFIX_TEACH      = "T_0";
+const char  *SdCard::LOG_FILE_PREFIX_EXERCISE   = "E_";
+const char  *SdCard::LOG_FILE_PREFIX_RESULT     = "R_";
 const char  *SdCard::LOG_FILE_SUFFIX            = ".txt";
 
 
@@ -31,7 +31,6 @@ SdCard::~SdCard()
 bool
 SdCard::begin()
 {
-    //pinMode(SD_CHIP_SELECT_PIN, OUTPUT);
 
     if (!SD.begin(SD_CHIP_SELECT_PIN)) {
         SerialUSB.println("SD.begin(SD_CHIP_SELECT_PIN) failed!");
@@ -39,12 +38,12 @@ SdCard::begin()
     }
 
     if (!card.init(SPI_HALF_SPEED, SD_CHIP_SELECT_PIN)) {
-        SerialUSB.println("SD.begin(SD_CHIP_SELECT_PIN) failed!");
+        SerialUSB.println("card.init(SPI_HALF_SPEED, SD_CHIP_SELECT_PIN) failed!");
       return false;
     }
 
     if (!volume.init(card)) {
-        SerialUSB.println("SD.begin(SD_CHIP_SELECT_PIN) failed!");
+        SerialUSB.println("volume.init(card) failed!");
       return false;
     }
 
@@ -80,16 +79,39 @@ SdCard::closeRoot()
 void
 SdCard::write(File &file, Quaternion &upperArmQ, Position &upperArmPos, Quaternion &lowerArmQ, Position &lowerArmPos)
 {
-    /*
-    myFile = SD.open(logFileName.c_str(), FILE_WRITE);
-    String data = "";
-    data += logFileName;
-    data += "\r\nbla";
-    myFile.write(data.c_str(), data.length());
-    myFile.close();
-    logFileName = nextLogFile();
-    break;
-    */
+    String line;
+
+    line   = String("[ ");
+    line  += String(millis());
+    line  += String(" ] ");
+
+    line  += String("[ ");
+    line  += String(upperArmQ.getW(), 4) + ", ";
+    line  += String(upperArmQ.getX(), 4) + ", ";
+    line  += String(upperArmQ.getY(), 4) + ", ";
+    line  += String(upperArmQ.getZ(), 4);
+    line  += String(" ] ");
+
+    line  += String("[ ");
+    line  += String(upperArmPos.getX(), 4) + ", ";
+    line  += String(upperArmPos.getY(), 4) + ", ";
+    line  += String(upperArmPos.getZ(), 4);
+    line  += String(" ] ");
+
+    line  += String("[ ");
+    line  += String(lowerArmQ.getW(), 4) + ", ";
+    line  += String(lowerArmQ.getX(), 4) + ", ";
+    line  += String(lowerArmQ.getY(), 4) + ", ";
+    line  += String(lowerArmQ.getZ(), 4);
+    line  += String(" ] ");
+
+    line  += String("[ ");
+    line  += String(lowerArmPos.getX(), 4) + ", ";
+    line  += String(lowerArmPos.getY(), 4) + ", ";
+    line  += String(lowerArmPos.getZ(), 4);
+    line  += String(" ] ");
+
+    file.println(line);
 
 }
 
@@ -102,34 +124,21 @@ SdCard::replaceTeachFile(DateTime &t)
 {
     String filename;
 
+    filename  = String(LOG_FILE_PREFIX_TEACH);
+    filename += String(LOG_FILE_SUFFIX);
 
-//    String pattern = LOG_FILE_PREFIX_TEACH;
-//
-//    rewindRoot();
-//    File   file    = findFile(pattern);
-//
-//    /*  If the file exists, delete file first */
-//    if (file) {
-//        filename = file.name();
-//        file.close();
-//        SD.remove(filename);
-//    }
+    if (SD.exists(filename)) {
+        SD.remove(filename);
+    }
 
-    /* Create new file */
-    //filename  = String(LOG_FILE_PREFIX_TEACH);
-    //filename += getDateFileSuffix(t);
-    filename  = getNextTeachFileSuffix();
-    //filename += String(LOG_FILE_SUFFIX);
-
-    SerialUSB.print("replaceTeachFile: ");
-    SerialUSB.println(filename);
-
+    SerialUSB.print("open: ");
+    SerialUSB.print(filename);
     File file = SD.open(filename, FILE_WRITE);
     if (file) {
-        file.print(String("test 123"));
-        SerialUSB.println("Write done!");
+        SerialUSB.println(" <success>");
+        file.println(getDateString(t));
     } else {
-        SerialUSB.println("Write failed!");
+        SerialUSB.println(" <fail>");
     }
 
     return file;
@@ -142,6 +151,13 @@ SdCard::openNextTeachFile()
     return findFile(pattern);
 }
 
+void
+SdCard::closeTeachFile(File &file, DateTime &t)
+{
+    file.println(getDateString(t));
+    file.close();
+}
+
 /******************************************************************************
  * Exercise file
  */
@@ -151,15 +167,20 @@ SdCard::openExerciseFile(DateTime &t)
     String filename;
 
     /* Create new file */
-    filename  = String(LOG_FILE_PREFIX_EXERCISE);
-    //filename += getDateFileSuffix(t);
-    filename += getNextExerciseFileSuffix();
-    filename += String(LOG_FILE_SUFFIX);
+    filename  = getNextExerciseFilename();
 
-    SerialUSB.print("openExerciseFile: ");
-    SerialUSB.println(filename);
+    SerialUSB.print("open: ");
+    SerialUSB.print(filename);
+    File file = SD.open(filename, FILE_WRITE);
 
-    return SD.open(filename.c_str(), FILE_WRITE);
+    if (file) {
+        SerialUSB.println(" <success>");
+        file.println(getDateString(t));
+    } else {
+        SerialUSB.println(" <fail>");
+    }
+
+    return file;
 }
 
 File
@@ -176,6 +197,13 @@ SdCard::deleteExerciseFiles()
     deleteFiles(pattern);
 }
 
+void
+SdCard::closeExerciseFile(File &file, DateTime &t)
+{
+    file.println(getDateString(t));
+    file.close();
+}
+
 /******************************************************************************
  * Result file
  */
@@ -185,12 +213,20 @@ SdCard::openResultFile(DateTime &t)
     String filename;
 
     /* Create new file */
-    filename  = String(LOG_FILE_PREFIX_RESULT);
-    //filename += getDateFileSuffix(t);
-    filename += getNextExerciseFileSuffix();
-    filename += String(LOG_FILE_SUFFIX);
+    filename  = getNextResultFilename();
 
-    return SD.open(filename.c_str(), FILE_WRITE);
+    SerialUSB.print("open: ");
+    SerialUSB.print(filename);
+    File file = SD.open(filename, FILE_WRITE);
+
+    if (file) {
+        SerialUSB.println(" <success>");
+        file.println(getDateString(t));
+    } else {
+        SerialUSB.println(" <fail>");
+    }
+
+    return file;
 }
 
 File
@@ -207,9 +243,126 @@ SdCard::deleteResultFiles()
     deleteFiles(pattern);
 }
 
+void
+SdCard::closeResultFile(File &file, DateTime &t)
+{
+    file.println(getDateString(t));
+    file.close();
+}
+
+/*
+void
+SdCard::readLine(File &file, char *buffer, int *len)
+{
+    int     i;
+    char    ch = 1;
+
+    SerialUSB.print("readLine ");
+    for (i = 0; file.available(); i++) {
+        ch = file.read();
+        if (ch > 0 && ch != '\n') {
+            buffer[i] = ch;
+        } else {
+            SerialUSB.println("done!");
+            break;
+        }
+    }
+    *len = i;
+}
+*/
+
 
 /******************************************************************************
- * Private methods
+ * Download
+ */
+
+
+void
+SdCard::downloadTeachFiles()
+{
+    File file;
+
+    openRoot();
+    rewindRoot();
+
+    while (true) {
+
+        file = openNextTeachFile();
+
+        if (!file) {
+            break;
+        }
+
+        downloadFile(file);
+    }
+
+    closeRoot();
+}
+
+void
+SdCard::downloadExerciseFiles()
+{
+    File file;
+
+    openRoot();
+    rewindRoot();
+
+    while (true) {
+        file = openNextExerciseFile();
+
+        if (!file) {
+            break;
+        }
+
+        downloadFile(file);
+    }
+
+    closeRoot();
+}
+
+void
+SdCard::downloadResultFiles()
+{
+    File file;
+
+    openRoot();
+    rewindRoot();
+
+    while (true) {
+        file = openNextResultFile();
+
+        if (!file) {
+            break;
+        }
+
+        downloadFile(file);
+    }
+
+    closeRoot();
+}
+
+void
+SdCard::downloadFile(File &file)
+{
+    String line;
+
+    SerialUSB.println(">>>");
+    SerialUSB.println(file.name());
+    while (true) {
+        line = file.readStringUntil('\n');
+        if (line.length() == 0) {
+            break;
+        }
+        SerialUSB.println(line);
+        delay(5);
+    }
+    SerialUSB.println("<<<");
+    file.close();
+}
+
+
+/******************************************************************************
+ * Date/time functions
  */
 
 String
@@ -223,6 +376,22 @@ SdCard::getDateFileSuffix(DateTime &t)
     return String(buf);
 }
 
+String
+SdCard::getDateString(DateTime &t)
+{
+    char buf[32];
+
+    sprintf(buf, "%02d.%02d.%04d %02d:%02d:%02d", t.day(), t.month(), t.year(),
+                                                  t.hour(), t.minute(), t.second());
+
+    return String(buf);
+}
+
+/******************************************************************************
+ * Private methods
+ */
+
+
 void
 SdCard::deleteFiles(String &pattern)
 {
@@ -230,8 +399,12 @@ SdCard::deleteFiles(String &pattern)
     bool    removeFile;
     String  filename;
 
-    /*** REWIND ***/
+    openRoot();
     root.rewindDirectory();
+
+    SerialUSB.print("Delete files with pattern \"");
+    SerialUSB.print(pattern);
+    SerialUSB.println("\"");
 
     while (true) {
         removeFile = false;
@@ -249,6 +422,7 @@ SdCard::deleteFiles(String &pattern)
         /* Is regular file */
         } else {
             filename = entry.name();
+
             if (filename.startsWith(pattern)) {
                 removeFile = true;
             }
@@ -258,9 +432,12 @@ SdCard::deleteFiles(String &pattern)
 
         /* Remove permanently */
         if (removeFile) {
-            SD.remove(filename.c_str());
+            SerialUSB.println(filename);
+            SD.remove(filename);
         }
     }
+
+    closeRoot();
 }
 
 File
@@ -268,8 +445,6 @@ SdCard::findFile(String &pattern)
 {
     File    entry;
     String  filename;
-
-    /*** DON'T REWIND => CONTINUE ***/
 
     while (true) {
         entry  = root.openNextFile(FILE_READ);
@@ -287,6 +462,7 @@ SdCard::findFile(String &pattern)
         } else {
             filename = entry.name();
             if (filename.startsWith(pattern)) {
+
                 /* Return opened file */
                 return entry;
             }
@@ -294,11 +470,12 @@ SdCard::findFile(String &pattern)
 
         entry.close();
     }
+
     return File();
 }
 
 String
-SdCard::getNextTeachFileSuffix()
+SdCard::getNextTeachFilename()
 {
     String      filename;
     int         i;
@@ -320,7 +497,7 @@ SdCard::getNextTeachFileSuffix()
 }
 
 String
-SdCard::getNextExerciseFileSuffix()
+SdCard::getNextExerciseFilename()
 {
     String      filename;
     int         i;
@@ -346,7 +523,7 @@ SdCard::getNextExerciseFileSuffix()
  * if we've reached the maximum file limit.
  */
 String
-SdCard::getNextResultFileSuffix()
+SdCard::getNextResultFilename()
 {
     String      filename;
     int         i;
@@ -354,7 +531,7 @@ SdCard::getNextResultFileSuffix()
     for (i = 0; i < LOG_FILE_INDEX_MAX; i++) {
 
         /* Construct a file with FOLDER/PREFIX[Index].SUFFIX */
-        filename = String(LOG_FILE_PREFIX_RESULT);
+        filename  = String(LOG_FILE_PREFIX_RESULT);
         filename += String(i);
         filename += String(LOG_FILE_SUFFIX);
 

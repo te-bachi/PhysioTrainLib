@@ -14,7 +14,7 @@ class Switch {
         SX1509         *_ioExpander;
         int             _pin;
         int             _prev;              // timestamp
-        bool             _pos;              // switch position
+        bool            _pos;               // switch position
         bool            _togglePos;         // buffered value to be returned
         bool            _toggleValue;       // buffered value to be returned
         bool            _incrementePos;     // buffered value to be returned

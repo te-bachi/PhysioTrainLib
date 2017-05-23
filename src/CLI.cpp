@@ -38,9 +38,9 @@ void
 CLI::update()
 {
     // Checks for new serial input:
-    if (Serial.available()) {
+    if (SerialUSB.available()) {
         // If new input is available on serial port
-        current->parse(Serial.read());
+        current->parse(SerialUSB.read());
     }
 }
 

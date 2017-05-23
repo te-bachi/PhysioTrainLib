@@ -8,12 +8,14 @@
 #define __PHYSIO_TRAIN_LIB__
 
 #include "Acceleration.h"
+#include "Accumulator.h"
 #include "CLI.h"
 #include "EulerAngle.h"
 #include "Filter.h"
 #include "I2CMux.h"
 #include "IMU.h"
 #include "KinematicModel.h"
+#include "Led.h"
 #include "Menu.h"
 #include "Mode.h"
 #include "Position.h"

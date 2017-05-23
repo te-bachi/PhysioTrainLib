@@ -48,23 +48,35 @@ class SdCard {
 
         File        replaceTeachFile(DateTime &t);   // Write
         File        openNextTeachFile();             // Read
+        void        closeTeachFile(File &file, DateTime &t);
 
         File        openExerciseFile(DateTime &t);   // Write
         File        openNextExerciseFile();          // Read
         void        deleteExerciseFiles();           // Delete all
+        void        closeExerciseFile(File &file, DateTime &t);
 
         File        openResultFile(DateTime &t);     // Write
         File        openNextResultFile();            // Read
         void        deleteResultFiles();             // Delete all
+        void        closeResultFile(File &file, DateTime &t);
+
+        //void        readLine(File &file, char *buffer, int *len);
+
+        void        downloadTeachFiles();
+        void        downloadExerciseFiles();
+        void        downloadResultFiles();
+        void        downloadFile(File &file);
+
+        String      getDateString(DateTime &t);
+        String      getDateFileSuffix(DateTime &t);
 
     private:
-        String      getDateFileSuffix(DateTime &t);
         void        deleteFiles(String &pattern);
         File        findFile(String &pattern);
 
-        String      getNextTeachFileSuffix();
-        String      getNextExerciseFileSuffix();
-        String      getNextResultFileSuffix();
+        String      getNextTeachFilename();
+        String      getNextExerciseFilename();
+        String      getNextResultFilename();
 
 };
 

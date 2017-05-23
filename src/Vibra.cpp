@@ -61,7 +61,7 @@ Vibra::start(int duration)
 
     I2CMux::selectGpioExpander();
     _ioExpander->digitalWrite(_enablePin, HIGH);
-    _ioExpander->analogWrite(_pwmPin, Vibra::VIBRA_MOVE_SLOW);
+    _ioExpander->analogWrite(_pwmPin, Vibra::VIBRA_MOVE_FAST);
 }
 
 void
