@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * PhysioTrain (c) 2017
+ * Andreas Bachmann
+ * 22.05.2017
+ *
+ * https://github.com/te-bachi/PhysioTrainLib
+ */
 
 #include "I2CMux.h"
 #include "Led.h"

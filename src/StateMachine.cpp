@@ -2,6 +2,8 @@
  * PhysioTrain (c) 2017
  * Andreas Bachmann
  * 14.05.2017
+ *
+ * https://github.com/te-bachi/PhysioTrainLib
  */
 
 #include "config.h"
@@ -90,6 +92,8 @@ StateMachine::run(Mode &mode, bool start)
 //            teachFile.println("welt");
 //            teachFile.println("bla");
 
+            /* Reset switch increment and local variable */
+            recordSwitch.resetIncrementValue();
             _teachRunInc   = 0;
 
             _currentState = State::TEACH_RUN;

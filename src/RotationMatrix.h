@@ -2,6 +2,8 @@
  * PhysioTrain (c) 2017
  * Andreas Bachmann
  * 23.04.2017
+ *
+ * https://github.com/te-bachi/PhysioTrainLib
  */
 
 #ifndef __ROTATION_MATRIX_H__

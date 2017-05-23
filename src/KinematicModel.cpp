@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * PhysioTrain (c) 2017
+ * Andreas Bachmann
+ * 25.04.2017
+ *
+ * https://github.com/te-bachi/PhysioTrainLib
+ */
 
 #include "config.h"
 #include "KinematicModel.h"

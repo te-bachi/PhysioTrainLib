@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * PhysioTrain (c) 2017
+ * Andreas Bachmann
+ * 13.05.2017
+ *
+ * https://github.com/te-bachi/PhysioTrainLib
+ */
 
 #include <Arduino.h>
 #include "PushButton.h"

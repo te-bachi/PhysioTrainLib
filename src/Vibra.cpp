@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * PhysioTrain (c) 2017
+ * Andreas Bachmann
+ * 16.05.2017
+ *
+ * https://github.com/te-bachi/PhysioTrainLib
+ */
 
 #include "Vibra.h"
 #include "I2CMux.h"

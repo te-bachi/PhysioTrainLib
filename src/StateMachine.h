@@ -2,6 +2,8 @@
  * PhysioTrain (c) 2017
  * Andreas Bachmann
  * 14.05.2017
+ *
+ * https://github.com/te-bachi/PhysioTrainLib
  */
 
 #ifndef __STATE_MACHINE_H__

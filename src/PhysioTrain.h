@@ -2,6 +2,8 @@
  * PhysioTrain (c) 2017
  * Andreas Bachmann
  * 02.05.2017
+ *
+ * https://github.com/te-bachi/PhysioTrainLib
  */
 
 #ifndef __PHYSIO_TRAIN_H__

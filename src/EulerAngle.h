@@ -2,6 +2,8 @@
  * PhysioTrain (c) 2017
  * Andreas Bachmann
  * 07.04.2017
+ *
+ * https://github.com/te-bachi/PhysioTrainLib
  */
 
 #ifndef __EULER_ANGLE_H__

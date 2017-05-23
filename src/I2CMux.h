@@ -2,6 +2,8 @@
  * PhysioTrain (c) 2017
  * Andreas Bachmann
  * 09.05.2017
+ *
+ * https://github.com/te-bachi/PhysioTrainLib
  */
 
 #ifndef __I2C_MUX_H__

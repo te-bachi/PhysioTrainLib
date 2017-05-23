@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * PhysioTrain (c) 2017
+ * Andreas Bachmann
+ * 02.05.2017
+ *
+ * https://github.com/te-bachi/PhysioTrainLib
+ */
 
 #include "PhysioTrain.h"
 #include "Mode.h"
