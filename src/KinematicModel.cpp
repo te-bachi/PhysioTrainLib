@@ -54,8 +54,15 @@ KinematicModel::update()
 {
     Quaternion      upperQAbs = _upperImu->getQuaternion();
     Quaternion      lowerQAbs = _lowerImu->getQuaternion();
-    Quaternion      upperQRel = _initUpperArmQuaternion * upperQAbs;
-    Quaternion      lowerQRel = _initLowerArmQuaternion * lowerQAbs;
+
+    /* Rel_t = Abs_0^-1 * Abs_t */
+    //Quaternion      upperQRel = _initUpperArmQuaternion * upperQAbs;
+    //Quaternion      lowerQRel = _initLowerArmQuaternion * lowerQAbs;
+
+    /* Rel_t = Abs_t * Abs_0^-1 */
+    Quaternion      upperQRel = upperQAbs * _initUpperArmQuaternion;
+    Quaternion      lowerQRel = lowerQAbs * _initLowerArmQuaternion;
+
     Position        p10(0.0f, 0.0f,  0.0f);
     Position        p11(0.0f, 0.0f, -_upperArmLength);
     Position        p12(0.0f, 0.0f, -_lowerArmLength);

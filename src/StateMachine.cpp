@@ -399,10 +399,11 @@ StateMachine::exerciseRun()
     static int k = 0;
     String line;
 
-    if (k % 60 == 0) {
+    if (k % 20 == 0) {
         line = getPositionQuaternionString();
         exerciseFile.println(line);
     }
+    k++;
 }
 
 void

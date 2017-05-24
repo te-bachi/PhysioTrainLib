@@ -49,7 +49,7 @@ void
 Accumulator::checkLevel()
 {
 
-    uint8_t zustand;
+    uint8_t zustand = 0;
     uint8_t akkuMessung = analogRead(_pin);
 
     //check if AkkuMessung im Bereich
